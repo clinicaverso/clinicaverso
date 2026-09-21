@@ -8,9 +8,9 @@
 
 ## Fundação ClinicaVerso Cards
 
-- [ ] Criar taxonomia compartilhada entre seções
-- [ ] Criar flashcards, conteúdo rico, mídia, tags e histórico editorial
-- [ ] Criar programação semanal e dados curriculares iniciais
-- [ ] Criar estado aluno-card e eventos imutáveis de revisão
-- [ ] Implementar papéis student, editor e admin com políticas no banco
-- [ ] Revisar integridade, índices, segurança e funcionamento da aplicação
+- [x] Criar taxonomia compartilhada entre seções
+- [x] Criar flashcards, conteúdo rico, mídia, tags e histórico editorial
+- [x] Criar programação semanal e dados curriculares iniciais
+- [x] Criar estado aluno-card e eventos imutáveis de revisão
+- [x] Implementar papéis student, editor e admin com políticas no banco
+- [x] Revisar integridade, índices, segurança e funcionamento da aplicação
