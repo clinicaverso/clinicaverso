@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -39,6 +40,12 @@ function Index() {
     if (error) { setMessage("E-mail ou senha incorretos."); setBusy(false); return; }
     navigate({ to: "/dashboard" });
   }
+  async function signInWithGoogle() {
+    setBusy(true); setMessage("");
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+    if (result.error) { setMessage("Não foi possível entrar com Google."); setBusy(false); return; }
+    if (!result.redirected) navigate({ to: "/dashboard" });
+  }
 
   return (
     <div className="grid min-h-screen lg:grid-cols-[minmax(0,1fr)_minmax(460px,38%)]">
@@ -58,6 +65,7 @@ function Index() {
             {!forgot && <div className="space-y-2"><div className="flex items-center justify-between"><Label htmlFor="password">Senha</Label><button type="button" onClick={() => setForgot(true)} className="text-xs font-semibold text-foreground hover:text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">Esqueci minha senha</button></div><div className="relative"><Input id="password" name="password" type={showPassword ? "text" : "password"} autoComplete="current-password" required className="h-12 pr-12" /><button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}>{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}</button></div></div>}
             {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
             <Button type="submit" size="lg" className="h-12 w-full justify-between" disabled={busy}>{busy ? "Aguarde..." : forgot ? "Enviar instruções" : "Entrar"}<ArrowRight /></Button>
+            {!forgot && <><div className="flex items-center gap-3"><span className="h-px flex-1 bg-border" /><span className="text-xs text-text-muted">ou</span><span className="h-px flex-1 bg-border" /></div><Button type="button" variant="outline" className="h-12 w-full" onClick={signInWithGoogle} disabled={busy}><span className="text-base font-bold">G</span>Continuar com Google</Button></>}
             {forgot && <button type="button" onClick={() => { setForgot(false); setMessage(""); }} className="w-full text-sm font-medium text-muted-foreground hover:text-foreground">Voltar para o login</button>}
           </form>
         </div>
