@@ -19,6 +19,7 @@
  */
 
 @theme inline {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -59,18 +60,35 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-surface: var(--surface);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-border-strong: var(--border-strong);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-primary-foreground: var(--brand-primary-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-product-cards: var(--product-cards);
+  --color-product-cards-hover: var(--product-cards-hover);
+  --color-product-cards-soft: var(--product-cards-soft);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-overlay: var(--overlay);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.5rem;
+  --background: oklch(0.985 0.004 165);
+  --foreground: oklch(0.16 0.012 190);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.76 0.23 145);
+  --primary-foreground: oklch(0.12 0.01 180);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
@@ -79,22 +97,39 @@
   --accent-foreground: oklch(0.208 0.042 265.755);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.91 0.008 190);
+  --input: oklch(0.88 0.01 190);
+  --ring: oklch(0.72 0.2 155);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
+  --surface: oklch(1 0 0);
+  --surface-secondary: oklch(0.965 0.005 190);
+  --text-primary: oklch(0.16 0.012 190);
+  --text-secondary: oklch(0.42 0.015 190);
+  --text-muted: oklch(0.59 0.012 190);
+  --border-strong: oklch(0.82 0.012 190);
+  --brand-primary: oklch(0.76 0.23 145);
+  --brand-primary-hover: oklch(0.68 0.21 145);
+  --brand-primary-soft: oklch(0.95 0.06 155);
+  --brand-primary-foreground: oklch(0.12 0.01 180);
+  --success: oklch(0.63 0.16 150);
+  --warning: oklch(0.75 0.15 75);
+  --product-cards: oklch(0.62 0.16 220);
+  --product-cards-hover: oklch(0.55 0.15 220);
+  --product-cards-soft: oklch(0.95 0.035 215);
+  --overlay: oklch(0.1 0.01 180 / 55%);
+  --sidebar: oklch(0.17 0.014 190);
+  --sidebar-foreground: oklch(0.98 0.004 180);
   --sidebar-primary: oklch(0.208 0.042 265.755);
   --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --sidebar-accent: oklch(0.24 0.015 190);
+  --sidebar-accent-foreground: oklch(0.98 0.004 180);
+  --sidebar-border: oklch(0.3 0.012 190);
+  --sidebar-ring: oklch(0.76 0.23 145);
+  --sidebar-muted: oklch(0.7 0.012 190);
 }
 
 .dark {
@@ -140,5 +175,10 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-sans);
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
   }
+
+  button, a, input, textarea, [role="button"] { outline-offset: 3px; }
 }
