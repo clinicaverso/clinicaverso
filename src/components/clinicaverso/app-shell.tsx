@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   BarChart3,
   BookOpen,
@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Home,
   Layers3,
+  LogOut,
   Menu,
   MoreHorizontal,
   Users,
@@ -18,6 +19,8 @@ import { useState, type ReactNode } from "react";
 import { Brand } from "./brand";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const studentGroups = [
   { label: "", items: [{ label: "Início", to: "/dashboard", icon: Home }] },
@@ -54,6 +57,8 @@ const adminGroups = [
 export function AppShell({ children, admin = false }: { children: ReactNode; admin?: boolean }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const groups = admin ? adminGroups : studentGroups;
 
@@ -89,7 +94,7 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
         <div className="flex items-center gap-3 rounded-md p-2">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-primary text-xs font-bold text-brand-primary-foreground">NR</div>
           {!collapsed && <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-sidebar-foreground">Nícolas</p><p className="text-xs text-sidebar-muted">{admin ? "Administrador" : "Aluno"}</p></div>}
-          {!collapsed && <MoreHorizontal className="h-4 w-4 text-sidebar-muted" />}
+          {!collapsed && <Button variant="ghostInverse" size="icon" aria-label="Sair" title="Sair" onClick={async () => { await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); navigate({ to: "/", replace: true }); }}><LogOut /></Button>}
         </div>
       </div>
     </div>

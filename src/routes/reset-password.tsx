@@ -1,0 +1,10 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Brand } from "@/components/clinicaverso/brand";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/reset-password")({ head: () => ({ meta: [{ title: "Nova senha — ClinicaVerso" }, { name: "description", content: "Crie uma nova senha para sua conta ClinicaVerso." }, { property: "og:title", content: "Nova senha — ClinicaVerso" }, { property: "og:description", content: "Crie uma nova senha para sua conta ClinicaVerso." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: ResetPassword });
+function ResetPassword() { const navigate = useNavigate(); const [ready, setReady] = useState(false); const [message, setMessage] = useState(""); useEffect(() => { setReady(window.location.hash.includes("type=recovery")); }, []); async function submit(e: React.FormEvent<HTMLFormElement>) { e.preventDefault(); const password = String(new FormData(e.currentTarget).get("password") ?? ""); const { error } = await supabase.auth.updateUser({ password }); if (error) setMessage("Não foi possível atualizar sua senha."); else navigate({ to: "/dashboard" }); } return <main className="flex min-h-screen items-center justify-center bg-background px-6"><div className="w-full max-w-sm"><Brand /><h1 className="mt-12 text-3xl font-semibold">Nova senha</h1>{ready ? <form className="mt-8 space-y-5" onSubmit={submit}><div className="space-y-2"><Label htmlFor="password">Nova senha</Label><Input id="password" name="password" type="password" minLength={8} required className="h-12" /></div>{message && <p className="text-sm text-destructive">{message}</p>}<Button className="h-12 w-full">Salvar nova senha</Button></form> : <p className="mt-4 text-muted-foreground">Abra esta página pelo link enviado ao seu e-mail.</p>}</div></main>; }
