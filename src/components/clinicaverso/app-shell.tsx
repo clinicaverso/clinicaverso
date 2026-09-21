@@ -18,6 +18,7 @@ import {
 import { useState, type ReactNode } from "react";
 import { Brand } from "./brand";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -71,6 +72,27 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
         </Button>
         <Button variant="ghostInverse" size="icon" className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"><X /></Button>
       </div>
+      {!admin && (
+        <div className="border-b border-sidebar-border px-2.5 py-3">
+          {collapsed ? (
+            <div className="grid h-10 place-items-center rounded-md border border-sidebar-border bg-sidebar-accent text-[11px] font-bold text-brand-primary" title="Seção atual: R1CM">R1</div>
+          ) : (
+            <div>
+              <label className="mb-1.5 block px-1 text-[10px] font-semibold uppercase text-sidebar-muted">Seção</label>
+              <Select defaultValue="r1cm">
+                <SelectTrigger className="h-10 border-sidebar-border bg-sidebar-accent px-3 text-sidebar-foreground shadow-none focus:ring-sidebar-ring" aria-label="Selecionar seção">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="r1cm">R1CM</SelectItem>
+                  <SelectItem value="rmaiscm" disabled><span className="flex w-full items-center gap-3"><span>R+CM</span><span className="ml-auto rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">Em breve</span></span></SelectItem>
+                  <SelectItem value="tecm" disabled><span className="flex w-full items-center gap-3"><span>TECM</span><span className="ml-auto rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">Em breve</span></span></SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+      )}
       <nav className="flex-1 space-y-6 overflow-y-auto px-2.5 py-6" aria-label={admin ? "Navegação administrativa" : "Navegação principal"}>
         {groups.map((group) => (
           <div key={group.label || "principal"}>
