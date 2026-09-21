@@ -1,0 +1,7 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { AppShell } from "@/components/clinicaverso/app-shell";
+import { PageHeader } from "@/components/clinicaverso/page-parts";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+export const Route = createFileRoute("/_authenticated/profile")({ head: () => ({ meta: [{ title: "Perfil — ClinicaVerso" }, { name: "description", content: "Gerencie seus dados no ClinicaVerso." }, { property: "og:title", content: "Perfil — ClinicaVerso" }, { property: "og:description", content: "Gerencie seus dados no ClinicaVerso." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <AppShell><div className="max-w-2xl space-y-10"><PageHeader title="Perfil" description="Seus dados e preferências da plataforma." /><form className="space-y-6 border-t border-border pt-8"><div className="space-y-2"><Label htmlFor="name">Nome</Label><Input id="name" defaultValue="Nícolas" className="h-11" /></div><div className="space-y-2"><Label htmlFor="email">E-mail</Label><Input id="email" type="email" defaultValue="nicolas@exemplo.com" className="h-11" /></div><Button type="button">Salvar alterações</Button></form></div></AppShell> });
