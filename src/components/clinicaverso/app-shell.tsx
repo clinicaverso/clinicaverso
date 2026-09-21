@@ -28,7 +28,7 @@ const studentGroups = [
     label: "Produtos",
     items: [
       { label: "Cards", to: "/cards", icon: Layers3 },
-      { label: "Revisões", to: "/dashboard", icon: ClipboardList, soon: true },
+      { label: "Teoria", to: "/dashboard", icon: ClipboardList, soon: true },
       { label: "Aulas", to: "/dashboard", icon: GraduationCap, soon: true },
     ],
   },
