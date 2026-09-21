@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => 
 
 const products = [
   { name: "ClinicaVerso Cards", description: "Revisão ativa para R1 de Clínica Médica.", icon: Layers3, active: true },
-  { name: "ClinicaVerso Revisões", description: "Revisões estruturadas para consolidar conteúdos.", icon: Sparkles, active: false },
+  { name: "ClinicaVerso Teoria", description: "Teoria estruturada para consolidar conteúdos.", icon: Sparkles, active: false },
   { name: "ClinicaVerso Aulas", description: "Aulas objetivas conectadas à sua jornada.", icon: Play, active: false },
 ];
 
