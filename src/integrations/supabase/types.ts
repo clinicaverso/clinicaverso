@@ -404,6 +404,13 @@ export type Database = {
             referencedRelation: "flashcards"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "review_events_version_fkey"
+            columns: ["flashcard_id", "card_version_seen"]
+            isOneToOne: false
+            referencedRelation: "flashcard_versions"
+            referencedColumns: ["flashcard_id", "version"]
+          },
         ]
       }
       sections: {
@@ -710,8 +717,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      can_manage_content: { Args: { _user_id: string }; Returns: boolean }
-      has_role: { Args: { _role: string; _user_id: string }; Returns: boolean }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "student" | "editor"
