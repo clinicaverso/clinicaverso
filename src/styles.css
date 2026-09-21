@@ -97,7 +97,7 @@
   --accent-foreground: oklch(0.25 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.9 0 0);
+  --border: oklch(0.91 0 0);
   --input: oklch(0.87 0 0);
   --ring: oklch(0.72 0.2 155);
   --chart-1: oklch(0.72 0.2 155);
@@ -106,11 +106,11 @@
   --chart-4: oklch(0.65 0 0);
   --chart-5: oklch(0.82 0 0);
   --surface: oklch(1 0 0);
-  --surface-secondary: oklch(0.955 0 0);
+  --surface-secondary: oklch(0.965 0 0);
   --text-primary: oklch(0.18 0 0);
   --text-secondary: oklch(0.4 0 0);
   --text-muted: oklch(0.56 0 0);
-  --border-strong: oklch(0.8 0 0);
+  --border-strong: oklch(0.82 0 0);
   --brand-primary: oklch(0.76 0.23 145);
   --brand-primary-hover: oklch(0.68 0.21 145);
   --brand-primary-soft: oklch(0.95 0.06 155);
@@ -181,4 +181,13 @@
   }
 
   button, a, input, textarea, [role="button"] { outline-offset: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

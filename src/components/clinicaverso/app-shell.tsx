@@ -64,33 +64,33 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
 
   const sidebar = (
     <div className="flex h-full flex-col">
-      <div className="flex h-20 items-center justify-between border-b border-sidebar-border px-5">
+      <div className="flex h-[68px] items-center justify-between border-b border-sidebar-border px-4">
         <Brand compact={collapsed} inverse />
         <Button variant="ghostInverse" size="icon" className="hidden lg:inline-flex" onClick={() => setCollapsed((v) => !v)} aria-label={collapsed ? "Expandir menu" : "Recolher menu"}>
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
         </Button>
         <Button variant="ghostInverse" size="icon" className="lg:hidden" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"><X /></Button>
       </div>
-      <nav className="flex-1 space-y-7 overflow-y-auto px-3 py-7" aria-label={admin ? "Navegação administrativa" : "Navegação principal"}>
+      <nav className="flex-1 space-y-6 overflow-y-auto px-2.5 py-6" aria-label={admin ? "Navegação administrativa" : "Navegação principal"}>
         {groups.map((group) => (
           <div key={group.label || "principal"}>
-            {!collapsed && group.label && <p className="mb-2 px-3 text-[11px] font-semibold uppercase text-sidebar-muted">{group.label}</p>}
+            {!collapsed && group.label && <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase text-sidebar-muted">{group.label}</p>}
             <div className="space-y-1">
               {group.items.map((item) => {
-                const active = pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(`${item.to}/`));
+                const active = !("soon" in item && item.soon) && (pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(`${item.to}/`)));
                 const Icon = item.icon;
+                const itemClassName = cn("flex h-10 items-center gap-3 rounded-md px-2.5 text-[13px] font-medium text-sidebar-muted transition-[color,background-color] duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring", active && "bg-sidebar-accent text-sidebar-foreground");
+                const content = <><Icon className={cn("h-[18px] w-[18px] shrink-0", active && "text-brand-primary")} />{!collapsed && <><span className="min-w-0 truncate">{item.label}</span>{"soon" in item && item.soon && <span className="ml-auto rounded-full border border-sidebar-border px-1.5 py-0.5 text-[9px] font-medium text-sidebar-muted">Em breve</span>}</>}</>;
+                if ("soon" in item && item.soon) return <div key={`${item.label}-${item.to}`} className={cn(itemClassName, "cursor-default hover:bg-transparent hover:text-sidebar-muted")}>{content}</div>;
                 return (
-                  <Link key={`${item.label}-${item.to}`} to={item.to} onClick={() => setMobileOpen(false)} className={cn("flex h-11 items-center gap-3 rounded-md px-3 text-sm font-medium text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring", active && "bg-sidebar-accent text-sidebar-foreground")}>
-                    <Icon className={cn("h-5 w-5 shrink-0", active && "text-brand-primary")} />
-                    {!collapsed && <><span className="min-w-0 truncate">{item.label}</span>{"soon" in item && item.soon && <span className="ml-auto rounded-full border border-sidebar-border px-2 py-0.5 text-[10px] text-sidebar-muted">Em breve</span>}</>}
-                  </Link>
+                  <Link key={`${item.label}-${item.to}`} to={item.to} onClick={() => setMobileOpen(false)} className={itemClassName}>{content}</Link>
                 );
               })}
             </div>
           </div>
         ))}
       </nav>
-      <div className="border-t border-sidebar-border p-3">
+      <div className="border-t border-sidebar-border p-2.5">
         <div className="flex items-center gap-3 rounded-md p-2">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-primary text-xs font-bold text-brand-primary-foreground">NR</div>
           {!collapsed && <div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold text-sidebar-foreground">Nícolas</p><p className="text-xs text-sidebar-muted">{admin ? "Administrador" : "Aluno"}</p></div>}
@@ -102,14 +102,14 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
 
   return (
     <div className="min-h-screen bg-background">
-      <aside className={cn("fixed inset-y-0 left-0 z-40 hidden bg-sidebar transition-[width] duration-200 lg:block", collapsed ? "w-[72px]" : "w-[252px]")}>{sidebar}</aside>
+       <aside className={cn("fixed inset-y-0 left-0 z-40 hidden bg-sidebar transition-[width] duration-200 lg:block", collapsed ? "w-[68px]" : "w-[232px]")}>{sidebar}</aside>
       {mobileOpen && <><button type="button" aria-label="Fechar navegação" className="fixed inset-0 z-40 bg-overlay lg:hidden" onClick={() => setMobileOpen(false)} /><aside className="fixed inset-y-0 left-0 z-50 w-[286px] bg-sidebar lg:hidden">{sidebar}</aside></>}
-      <div className={cn("transition-[margin] duration-200", collapsed ? "lg:ml-[72px]" : "lg:ml-[252px]")}>
-        <header className="sticky top-0 z-30 flex h-16 items-center border-b border-border bg-background/95 px-5 backdrop-blur md:px-8 lg:hidden">
+      <div className={cn("transition-[margin] duration-200", collapsed ? "lg:ml-[68px]" : "lg:ml-[232px]")}> 
+        <header className="sticky top-0 z-30 grid h-14 grid-cols-[auto_minmax(0,1fr)] items-center border-b border-border bg-background/95 px-4 backdrop-blur md:px-6 lg:hidden">
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)} aria-label="Abrir menu"><Menu /></Button>
-          <div className="ml-3"><Brand /></div>
+          <div className="ml-2 min-w-0"><Brand /></div>
         </header>
-        <main className="mx-auto w-full max-w-[1440px] px-5 py-8 md:px-10 md:py-12 lg:px-14">{children}</main>
+        <main className="mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6 md:px-8 md:py-8 lg:px-10 lg:py-10">{children}</main>
       </div>
     </div>
   );

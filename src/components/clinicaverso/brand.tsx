@@ -7,7 +7,7 @@ export function Brand({ compact = false, inverse = false }: { compact?: boolean;
     <img
       src={(compact ? markAsset : inverse ? logo6Asset : logoAsset).url}
       alt="ClinicaVerso"
-      className={compact ? "h-9 w-9 object-contain" : "h-9 w-auto object-contain"}
+      className={compact ? "h-8 w-8 object-contain" : "h-8 w-auto object-contain"}
     />
   );
 }
