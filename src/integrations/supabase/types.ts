@@ -130,6 +130,59 @@ export type Database = {
           },
         ]
       }
+      flashcard_media_versions: {
+        Row: {
+          alt_text: string
+          caption: string
+          card_version: number
+          created_at: string
+          display_order: number
+          flashcard_id: string
+          id: string
+          is_active: boolean
+          media_id: string
+          placement: Database["public"]["Enums"]["media_placement"]
+          storage_path: string
+          type: Database["public"]["Enums"]["media_type"]
+        }
+        Insert: {
+          alt_text?: string
+          caption?: string
+          card_version: number
+          created_at?: string
+          display_order: number
+          flashcard_id: string
+          id?: string
+          is_active: boolean
+          media_id: string
+          placement: Database["public"]["Enums"]["media_placement"]
+          storage_path: string
+          type: Database["public"]["Enums"]["media_type"]
+        }
+        Update: {
+          alt_text?: string
+          caption?: string
+          card_version?: number
+          created_at?: string
+          display_order?: number
+          flashcard_id?: string
+          id?: string
+          is_active?: boolean
+          media_id?: string
+          placement?: Database["public"]["Enums"]["media_placement"]
+          storage_path?: string
+          type?: Database["public"]["Enums"]["media_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_media_versions_flashcard_id_card_version_fkey"
+            columns: ["flashcard_id", "card_version"]
+            isOneToOne: false
+            referencedRelation: "flashcard_versions"
+            referencedColumns: ["flashcard_id", "version"]
+          },
+        ]
+      }
       flashcard_tags: {
         Row: {
           created_at: string
