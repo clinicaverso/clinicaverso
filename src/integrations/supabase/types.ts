@@ -183,6 +183,39 @@ export type Database = {
           },
         ]
       }
+      flashcard_sections: {
+        Row: {
+          created_at: string
+          flashcard_id: string
+          section_id: string
+        }
+        Insert: {
+          created_at?: string
+          flashcard_id: string
+          section_id: string
+        }
+        Update: {
+          created_at?: string
+          flashcard_id?: string
+          section_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_sections_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcard_sections_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flashcard_tags: {
         Row: {
           created_at: string
@@ -229,7 +262,6 @@ export type Database = {
           id: string
           question: string
           reference: string
-          section_id: string
           short_answer: string
           status: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id: string | null
@@ -248,7 +280,6 @@ export type Database = {
           id?: string
           question: string
           reference?: string
-          section_id: string
           short_answer: string
           status: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id?: string | null
@@ -267,7 +298,6 @@ export type Database = {
           id?: string
           question?: string
           reference?: string
-          section_id?: string
           short_answer?: string
           status?: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id?: string | null
@@ -282,11 +312,24 @@ export type Database = {
             referencedRelation: "flashcards"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "flashcard_versions_subtopic_topic_fkey"
+            columns: ["subtopic_id", "topic_id"]
+            isOneToOne: false
+            referencedRelation: "subtopics"
+            referencedColumns: ["id", "topic_id"]
+          },
+          {
+            foreignKeyName: "flashcard_versions_topic_area_fkey"
+            columns: ["topic_id", "area_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id", "area_id"]
+          },
         ]
       }
       flashcards: {
         Row: {
-          area_id: string
           code: string
           comment: Json
           created_at: string
@@ -295,7 +338,6 @@ export type Database = {
           id: string
           question: string
           reference: string
-          section_id: string
           short_answer: string
           status: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id: string | null
@@ -305,7 +347,6 @@ export type Database = {
           version: number
         }
         Insert: {
-          area_id: string
           code: string
           comment?: Json
           created_at?: string
@@ -314,7 +355,6 @@ export type Database = {
           id?: string
           question: string
           reference?: string
-          section_id: string
           short_answer: string
           status?: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id?: string | null
@@ -324,7 +364,6 @@ export type Database = {
           version?: number
         }
         Update: {
-          area_id?: string
           code?: string
           comment?: Json
           created_at?: string
@@ -333,7 +372,6 @@ export type Database = {
           id?: string
           question?: string
           reference?: string
-          section_id?: string
           short_answer?: string
           status?: Database["public"]["Enums"]["flashcard_status"]
           subtopic_id?: string | null
@@ -344,32 +382,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "flashcards_area_id_fkey"
-            columns: ["area_id"]
-            isOneToOne: false
-            referencedRelation: "areas"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "flashcards_section_id_fkey"
-            columns: ["section_id"]
-            isOneToOne: false
-            referencedRelation: "sections"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "flashcards_subtopic_id_topic_id_fkey"
+            foreignKeyName: "flashcards_subtopic_topic_fkey"
             columns: ["subtopic_id", "topic_id"]
             isOneToOne: false
             referencedRelation: "subtopics"
             referencedColumns: ["id", "topic_id"]
           },
           {
-            foreignKeyName: "flashcards_topic_id_area_id_fkey"
-            columns: ["topic_id", "area_id"]
+            foreignKeyName: "flashcards_topic_id_fkey"
+            columns: ["topic_id"]
             isOneToOne: false
             referencedRelation: "topics"
-            referencedColumns: ["id", "area_id"]
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -685,29 +709,56 @@ export type Database = {
         }
         Relationships: []
       }
-      weekly_schedule_topics: {
+      user_study_preferences: {
+        Row: {
+          created_at: string
+          daily_card_goal: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_card_goal?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_card_goal?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weekly_schedule_items: {
         Row: {
           created_at: string
           id: string
-          release_date: string
-          release_weekday: number
+          release_at: string
+          release_day: number
+          release_order: number
           topic_id: string
+          updated_at: string
           weekly_schedule_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          release_date: string
-          release_weekday: number
+          release_at: string
+          release_day: number
+          release_order: number
           topic_id: string
+          updated_at?: string
           weekly_schedule_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          release_date?: string
-          release_weekday?: number
+          release_at?: string
+          release_day?: number
+          release_order?: number
           topic_id?: string
+          updated_at?: string
           weekly_schedule_id?: string
         }
         Relationships: [
