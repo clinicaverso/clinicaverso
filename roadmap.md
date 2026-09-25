@@ -14,3 +14,14 @@
 - [x] Criar estado aluno-card e eventos imutáveis de revisão
 - [x] Implementar papéis student, editor e admin com políticas no banco
 - [x] Revisar integridade, índices, segurança e funcionamento da aplicação
+
+## Painel administrativo de conteúdo
+
+- [ ] Reorganizar navegação e permissões de admin/editor
+- [ ] Conectar dashboard administrativo aos dados reais
+- [ ] Implementar listagem, criação, edição, duplicação e arquivamento de cards
+- [ ] Implementar rich text, mídia privada e preview do card
+- [ ] Implementar gestão de seções, áreas, temas, subtemas e tags
+- [ ] Implementar programação semanal
+- [ ] Implementar gestão de usuários e papéis
+- [ ] Validar RLS, versionamento, auditoria, responsividade e regressões
