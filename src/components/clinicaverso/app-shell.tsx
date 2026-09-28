@@ -11,7 +11,7 @@ import {
   Layers3,
   LogOut,
   Menu,
-  MoreHorizontal,
+  Image, Tags, CalendarDays, Grid2X2, ListTree, FolderTree, MoreHorizontal,
   Users,
   X,
 } from "lucide-react";
@@ -21,7 +21,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMyAccess } from "@/lib/auth.functions";
 
 const studentGroups = [
   { label: "", items: [{ label: "Início", to: "/dashboard", icon: Home }] },
@@ -43,16 +44,18 @@ const studentGroups = [
 ] as const;
 
 const adminGroups = [
-  {
-    label: "Administração",
-    items: [
-      { label: "Dashboard", to: "/admin", icon: Home },
-      { label: "Flashcards", to: "/admin/flashcards", icon: Layers3 },
-      { label: "Organização", to: "/admin/organization", icon: BookOpen },
-      { label: "Usuários", to: "/admin/users", icon: Users },
-      { label: "Métricas", to: "/admin/metrics", icon: BarChart3 },
-    ],
-  },
+  { label: "Visão geral", items: [{ label: "Dashboard", to: "/admin", icon: Home, adminOnly: true }] },
+  { label: "Conteúdo", items: [
+    { label: "Cards", to: "/admin/flashcards", icon: Layers3 },
+    { label: "Seções", to: "/admin/sections", icon: Grid2X2 },
+    { label: "Áreas", to: "/admin/areas", icon: BookOpen },
+    { label: "Temas", to: "/admin/topics", icon: FolderTree },
+    { label: "Subtemas", to: "/admin/subtopics", icon: ListTree },
+    { label: "Tags", to: "/admin/tags", icon: Tags },
+    { label: "Mídia", to: "/admin/media", icon: Image },
+  ] },
+  { label: "Currículo", items: [{ label: "Programação semanal", to: "/admin/schedule", icon: CalendarDays, adminOnly: true }] },
+  { label: "Gestão", items: [{ label: "Usuários", to: "/admin/users", icon: Users, adminOnly: true }] },
 ] as const;
 
 export function AppShell({ children, admin = false }: { children: ReactNode; admin?: boolean }) {
@@ -61,6 +64,7 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const { data: access } = useQuery({ queryKey: ["my-access"], queryFn: () => getMyAccess(), enabled: admin });
   const groups = admin ? adminGroups : studentGroups;
 
   const sidebar = (
@@ -98,7 +102,7 @@ export function AppShell({ children, admin = false }: { children: ReactNode; adm
           <div key={group.label || "principal"}>
             {!collapsed && group.label && <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase text-sidebar-muted">{group.label}</p>}
             <div className="space-y-1">
-              {group.items.map((item) => {
+              {group.items.filter(item => !("adminOnly" in item && item.adminOnly) || access?.roles.includes("admin")).map((item) => {
                 const active = !("soon" in item && item.soon) && (pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(`${item.to}/`)));
                 const Icon = item.icon;
                 const itemClassName = cn("flex h-10 items-center gap-3 rounded-md px-2.5 text-[13px] font-medium text-sidebar-muted transition-[color,background-color] duration-150 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring", active && "bg-sidebar-accent text-sidebar-foreground");

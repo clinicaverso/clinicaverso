@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 
 export const adminHead = (title: string, description: string) => ({ meta: [{ title: `${title} — Admin ClinicaVerso` }, { name: "description", content: description }, { property: "og:title", content: `${title} — Admin ClinicaVerso` }, { property: "og:description", content: description }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] });
 export function AdminPage({ title, description, action, children }: { title: string; description?: string; action?: ReactNode; children: ReactNode }) {
-  return <AppShell admin><div className="space-y-7"><PageHeader title={title} description={description} action={action} />{children}</div></AppShell>;
+  return <AppShell admin><div className="space-y-7"><PageHeader title={title} {...(description ? { description } : {})} action={action} />{children}</div></AppShell>;
 }
 export function useTaxonomy() { return useQuery({ queryKey: ["admin", "taxonomy"], queryFn: () => getTaxonomy(), staleTime: 60000 }); }
 export function OptionSelect({ value, onChange, options, placeholder = "Todos", className }: { value: string; onChange: (value: string) => void; options: { id: string; name: string }[]; placeholder?: string; className?: string }) {
