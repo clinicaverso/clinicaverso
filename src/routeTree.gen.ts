@@ -18,9 +18,14 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
+import { Route as AuthenticatedAdminAdminAreasRouteImport } from './routes/_authenticated/_admin/admin.areas'
 import { Route as AuthenticatedAdminAdminFlashcardsRouteImport } from './routes/_authenticated/_admin/admin.flashcards'
 import { Route as AuthenticatedAdminAdminMetricsRouteImport } from './routes/_authenticated/_admin/admin.metrics'
 import { Route as AuthenticatedAdminAdminOrganizationRouteImport } from './routes/_authenticated/_admin/admin.organization'
+import { Route as AuthenticatedAdminAdminSectionsRouteImport } from './routes/_authenticated/_admin/admin.sections'
+import { Route as AuthenticatedAdminAdminSubtopicsRouteImport } from './routes/_authenticated/_admin/admin.subtopics'
+import { Route as AuthenticatedAdminAdminTagsRouteImport } from './routes/_authenticated/_admin/admin.tags'
+import { Route as AuthenticatedAdminAdminTopicsRouteImport } from './routes/_authenticated/_admin/admin.topics'
 import { Route as AuthenticatedAdminAdminUsersRouteImport } from './routes/_authenticated/_admin/admin.users'
 import { Route as AuthenticatedAdminAdminFlashcardsNewRouteImport } from './routes/_authenticated/_admin/admin.flashcards.new'
 
@@ -68,6 +73,12 @@ const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminAdminAreasRoute =
+  AuthenticatedAdminAdminAreasRouteImport.update({
+    id: '/areas',
+    path: '/areas',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
 const AuthenticatedAdminAdminFlashcardsRoute =
   AuthenticatedAdminAdminFlashcardsRouteImport.update({
     id: '/flashcards',
@@ -84,6 +95,30 @@ const AuthenticatedAdminAdminOrganizationRoute =
   AuthenticatedAdminAdminOrganizationRouteImport.update({
     id: '/organization',
     path: '/organization',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminSectionsRoute =
+  AuthenticatedAdminAdminSectionsRouteImport.update({
+    id: '/sections',
+    path: '/sections',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminSubtopicsRoute =
+  AuthenticatedAdminAdminSubtopicsRouteImport.update({
+    id: '/subtopics',
+    path: '/subtopics',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminTagsRoute =
+  AuthenticatedAdminAdminTagsRouteImport.update({
+    id: '/tags',
+    path: '/tags',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminTopicsRoute =
+  AuthenticatedAdminAdminTopicsRouteImport.update({
+    id: '/topics',
+    path: '/topics',
     getParentRoute: () => AuthenticatedAdminAdminRoute,
   } as any)
 const AuthenticatedAdminAdminUsersRoute =
@@ -107,9 +142,14 @@ export interface FileRoutesByFullPath {
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
+  '/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
+  '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
+  '/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersRoute
   '/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
@@ -121,9 +161,14 @@ export interface FileRoutesByTo {
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
+  '/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
+  '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
+  '/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersRoute
   '/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
@@ -138,9 +183,14 @@ export interface FileRoutesById {
   '/_authenticated/performance': typeof AuthenticatedPerformanceRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/_authenticated/_admin/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/_authenticated/_admin/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   '/_authenticated/_admin/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/_authenticated/_admin/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/_authenticated/_admin/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
+  '/_authenticated/_admin/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
+  '/_authenticated/_admin/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
+  '/_authenticated/_admin/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/_authenticated/_admin/admin/users': typeof AuthenticatedAdminAdminUsersRoute
   '/_authenticated/_admin/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
@@ -154,9 +204,14 @@ export interface FileRouteTypes {
     | '/performance'
     | '/profile'
     | '/admin'
+    | '/admin/areas'
     | '/admin/flashcards'
     | '/admin/metrics'
     | '/admin/organization'
+    | '/admin/sections'
+    | '/admin/subtopics'
+    | '/admin/tags'
+    | '/admin/topics'
     | '/admin/users'
     | '/admin/flashcards/new'
   fileRoutesByTo: FileRoutesByTo
@@ -168,9 +223,14 @@ export interface FileRouteTypes {
     | '/performance'
     | '/profile'
     | '/admin'
+    | '/admin/areas'
     | '/admin/flashcards'
     | '/admin/metrics'
     | '/admin/organization'
+    | '/admin/sections'
+    | '/admin/subtopics'
+    | '/admin/tags'
+    | '/admin/topics'
     | '/admin/users'
     | '/admin/flashcards/new'
   id:
@@ -184,9 +244,14 @@ export interface FileRouteTypes {
     | '/_authenticated/performance'
     | '/_authenticated/profile'
     | '/_authenticated/_admin/admin'
+    | '/_authenticated/_admin/admin/areas'
     | '/_authenticated/_admin/admin/flashcards'
     | '/_authenticated/_admin/admin/metrics'
     | '/_authenticated/_admin/admin/organization'
+    | '/_authenticated/_admin/admin/sections'
+    | '/_authenticated/_admin/admin/subtopics'
+    | '/_authenticated/_admin/admin/tags'
+    | '/_authenticated/_admin/admin/topics'
     | '/_authenticated/_admin/admin/users'
     | '/_authenticated/_admin/admin/flashcards/new'
   fileRoutesById: FileRoutesById
@@ -262,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/_admin/admin/areas': {
+      id: '/_authenticated/_admin/admin/areas'
+      path: '/areas'
+      fullPath: '/admin/areas'
+      preLoaderRoute: typeof AuthenticatedAdminAdminAreasRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
     '/_authenticated/_admin/admin/flashcards': {
       id: '/_authenticated/_admin/admin/flashcards'
       path: '/flashcards'
@@ -281,6 +353,34 @@ declare module '@tanstack/react-router' {
       path: '/organization'
       fullPath: '/admin/organization'
       preLoaderRoute: typeof AuthenticatedAdminAdminOrganizationRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/sections': {
+      id: '/_authenticated/_admin/admin/sections'
+      path: '/sections'
+      fullPath: '/admin/sections'
+      preLoaderRoute: typeof AuthenticatedAdminAdminSectionsRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/subtopics': {
+      id: '/_authenticated/_admin/admin/subtopics'
+      path: '/subtopics'
+      fullPath: '/admin/subtopics'
+      preLoaderRoute: typeof AuthenticatedAdminAdminSubtopicsRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/tags': {
+      id: '/_authenticated/_admin/admin/tags'
+      path: '/tags'
+      fullPath: '/admin/tags'
+      preLoaderRoute: typeof AuthenticatedAdminAdminTagsRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/topics': {
+      id: '/_authenticated/_admin/admin/topics'
+      path: '/topics'
+      fullPath: '/admin/topics'
+      preLoaderRoute: typeof AuthenticatedAdminAdminTopicsRouteImport
       parentRoute: typeof AuthenticatedAdminAdminRoute
     }
     '/_authenticated/_admin/admin/users': {
@@ -316,19 +416,30 @@ const AuthenticatedAdminAdminFlashcardsRouteWithChildren =
   )
 
 interface AuthenticatedAdminAdminRouteChildren {
+  AuthenticatedAdminAdminAreasRoute: typeof AuthenticatedAdminAdminAreasRoute
   AuthenticatedAdminAdminFlashcardsRoute: typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   AuthenticatedAdminAdminMetricsRoute: typeof AuthenticatedAdminAdminMetricsRoute
   AuthenticatedAdminAdminOrganizationRoute: typeof AuthenticatedAdminAdminOrganizationRoute
+  AuthenticatedAdminAdminSectionsRoute: typeof AuthenticatedAdminAdminSectionsRoute
+  AuthenticatedAdminAdminSubtopicsRoute: typeof AuthenticatedAdminAdminSubtopicsRoute
+  AuthenticatedAdminAdminTagsRoute: typeof AuthenticatedAdminAdminTagsRoute
+  AuthenticatedAdminAdminTopicsRoute: typeof AuthenticatedAdminAdminTopicsRoute
   AuthenticatedAdminAdminUsersRoute: typeof AuthenticatedAdminAdminUsersRoute
 }
 
 const AuthenticatedAdminAdminRouteChildren: AuthenticatedAdminAdminRouteChildren =
   {
+    AuthenticatedAdminAdminAreasRoute: AuthenticatedAdminAdminAreasRoute,
     AuthenticatedAdminAdminFlashcardsRoute:
       AuthenticatedAdminAdminFlashcardsRouteWithChildren,
     AuthenticatedAdminAdminMetricsRoute: AuthenticatedAdminAdminMetricsRoute,
     AuthenticatedAdminAdminOrganizationRoute:
       AuthenticatedAdminAdminOrganizationRoute,
+    AuthenticatedAdminAdminSectionsRoute: AuthenticatedAdminAdminSectionsRoute,
+    AuthenticatedAdminAdminSubtopicsRoute:
+      AuthenticatedAdminAdminSubtopicsRoute,
+    AuthenticatedAdminAdminTagsRoute: AuthenticatedAdminAdminTagsRoute,
+    AuthenticatedAdminAdminTopicsRoute: AuthenticatedAdminAdminTopicsRoute,
     AuthenticatedAdminAdminUsersRoute: AuthenticatedAdminAdminUsersRoute,
   }
 
