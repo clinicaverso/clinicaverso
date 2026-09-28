@@ -27,6 +27,7 @@ import { Route as AuthenticatedAdminAdminSubtopicsRouteImport } from './routes/_
 import { Route as AuthenticatedAdminAdminTagsRouteImport } from './routes/_authenticated/_admin/admin.tags'
 import { Route as AuthenticatedAdminAdminTopicsRouteImport } from './routes/_authenticated/_admin/admin.topics'
 import { Route as AuthenticatedAdminAdminUsersRouteImport } from './routes/_authenticated/_admin/admin.users'
+import { Route as AuthenticatedAdminAdminFlashcardsIdRouteImport } from './routes/_authenticated/_admin/admin.flashcards.$id'
 import { Route as AuthenticatedAdminAdminFlashcardsNewRouteImport } from './routes/_authenticated/_admin/admin.flashcards.new'
 
 const IndexRoute = IndexRouteImport.update({
@@ -127,6 +128,12 @@ const AuthenticatedAdminAdminUsersRoute =
     path: '/users',
     getParentRoute: () => AuthenticatedAdminAdminRoute,
   } as any)
+const AuthenticatedAdminAdminFlashcardsIdRoute =
+  AuthenticatedAdminAdminFlashcardsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminAdminFlashcardsRoute,
+  } as any)
 const AuthenticatedAdminAdminFlashcardsNewRoute =
   AuthenticatedAdminAdminFlashcardsNewRouteImport.update({
     id: '/new',
@@ -151,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
   '/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersRoute
+  '/admin/flashcards/$id': typeof AuthenticatedAdminAdminFlashcardsIdRoute
   '/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
 export interface FileRoutesByTo {
@@ -170,6 +178,7 @@ export interface FileRoutesByTo {
   '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
   '/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/admin/users': typeof AuthenticatedAdminAdminUsersRoute
+  '/admin/flashcards/$id': typeof AuthenticatedAdminAdminFlashcardsIdRoute
   '/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
 export interface FileRoutesById {
@@ -192,6 +201,7 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
   '/_authenticated/_admin/admin/topics': typeof AuthenticatedAdminAdminTopicsRoute
   '/_authenticated/_admin/admin/users': typeof AuthenticatedAdminAdminUsersRoute
+  '/_authenticated/_admin/admin/flashcards/$id': typeof AuthenticatedAdminAdminFlashcardsIdRoute
   '/_authenticated/_admin/admin/flashcards/new': typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
 export interface FileRouteTypes {
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/topics'
     | '/admin/users'
+    | '/admin/flashcards/$id'
     | '/admin/flashcards/new'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/topics'
     | '/admin/users'
+    | '/admin/flashcards/$id'
     | '/admin/flashcards/new'
   id:
     | '__root__'
@@ -253,6 +265,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin/tags'
     | '/_authenticated/_admin/admin/topics'
     | '/_authenticated/_admin/admin/users'
+    | '/_authenticated/_admin/admin/flashcards/$id'
     | '/_authenticated/_admin/admin/flashcards/new'
   fileRoutesById: FileRoutesById
 }
@@ -390,6 +403,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminAdminRoute
     }
+    '/_authenticated/_admin/admin/flashcards/$id': {
+      id: '/_authenticated/_admin/admin/flashcards/$id'
+      path: '/$id'
+      fullPath: '/admin/flashcards/$id'
+      preLoaderRoute: typeof AuthenticatedAdminAdminFlashcardsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminFlashcardsRoute
+    }
     '/_authenticated/_admin/admin/flashcards/new': {
       id: '/_authenticated/_admin/admin/flashcards/new'
       path: '/new'
@@ -401,11 +421,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminAdminFlashcardsRouteChildren {
+  AuthenticatedAdminAdminFlashcardsIdRoute: typeof AuthenticatedAdminAdminFlashcardsIdRoute
   AuthenticatedAdminAdminFlashcardsNewRoute: typeof AuthenticatedAdminAdminFlashcardsNewRoute
 }
 
 const AuthenticatedAdminAdminFlashcardsRouteChildren: AuthenticatedAdminAdminFlashcardsRouteChildren =
   {
+    AuthenticatedAdminAdminFlashcardsIdRoute:
+      AuthenticatedAdminAdminFlashcardsIdRoute,
     AuthenticatedAdminAdminFlashcardsNewRoute:
       AuthenticatedAdminAdminFlashcardsNewRoute,
   }
