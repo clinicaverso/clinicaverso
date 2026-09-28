@@ -20,8 +20,10 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
 import { Route as AuthenticatedAdminAdminAreasRouteImport } from './routes/_authenticated/_admin/admin.areas'
 import { Route as AuthenticatedAdminAdminFlashcardsRouteImport } from './routes/_authenticated/_admin/admin.flashcards'
+import { Route as AuthenticatedAdminAdminMediaRouteImport } from './routes/_authenticated/_admin/admin.media'
 import { Route as AuthenticatedAdminAdminMetricsRouteImport } from './routes/_authenticated/_admin/admin.metrics'
 import { Route as AuthenticatedAdminAdminOrganizationRouteImport } from './routes/_authenticated/_admin/admin.organization'
+import { Route as AuthenticatedAdminAdminScheduleRouteImport } from './routes/_authenticated/_admin/admin.schedule'
 import { Route as AuthenticatedAdminAdminSectionsRouteImport } from './routes/_authenticated/_admin/admin.sections'
 import { Route as AuthenticatedAdminAdminSubtopicsRouteImport } from './routes/_authenticated/_admin/admin.subtopics'
 import { Route as AuthenticatedAdminAdminTagsRouteImport } from './routes/_authenticated/_admin/admin.tags'
@@ -86,6 +88,12 @@ const AuthenticatedAdminAdminFlashcardsRoute =
     path: '/flashcards',
     getParentRoute: () => AuthenticatedAdminAdminRoute,
   } as any)
+const AuthenticatedAdminAdminMediaRoute =
+  AuthenticatedAdminAdminMediaRouteImport.update({
+    id: '/media',
+    path: '/media',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
 const AuthenticatedAdminAdminMetricsRoute =
   AuthenticatedAdminAdminMetricsRouteImport.update({
     id: '/metrics',
@@ -96,6 +104,12 @@ const AuthenticatedAdminAdminOrganizationRoute =
   AuthenticatedAdminAdminOrganizationRouteImport.update({
     id: '/organization',
     path: '/organization',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminScheduleRoute =
+  AuthenticatedAdminAdminScheduleRouteImport.update({
+    id: '/schedule',
+    path: '/schedule',
     getParentRoute: () => AuthenticatedAdminAdminRoute,
   } as any)
 const AuthenticatedAdminAdminSectionsRoute =
@@ -151,8 +165,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  '/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/admin/schedule': typeof AuthenticatedAdminAdminScheduleRoute
   '/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
   '/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
   '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
@@ -171,8 +187,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  '/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/admin/schedule': typeof AuthenticatedAdminAdminScheduleRoute
   '/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
   '/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
   '/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
@@ -194,8 +212,10 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/_authenticated/_admin/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/_authenticated/_admin/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  '/_authenticated/_admin/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/_authenticated/_admin/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/_authenticated/_admin/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
+  '/_authenticated/_admin/admin/schedule': typeof AuthenticatedAdminAdminScheduleRoute
   '/_authenticated/_admin/admin/sections': typeof AuthenticatedAdminAdminSectionsRoute
   '/_authenticated/_admin/admin/subtopics': typeof AuthenticatedAdminAdminSubtopicsRoute
   '/_authenticated/_admin/admin/tags': typeof AuthenticatedAdminAdminTagsRoute
@@ -216,8 +236,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/areas'
     | '/admin/flashcards'
+    | '/admin/media'
     | '/admin/metrics'
     | '/admin/organization'
+    | '/admin/schedule'
     | '/admin/sections'
     | '/admin/subtopics'
     | '/admin/tags'
@@ -236,8 +258,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/areas'
     | '/admin/flashcards'
+    | '/admin/media'
     | '/admin/metrics'
     | '/admin/organization'
+    | '/admin/schedule'
     | '/admin/sections'
     | '/admin/subtopics'
     | '/admin/tags'
@@ -258,8 +282,10 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin'
     | '/_authenticated/_admin/admin/areas'
     | '/_authenticated/_admin/admin/flashcards'
+    | '/_authenticated/_admin/admin/media'
     | '/_authenticated/_admin/admin/metrics'
     | '/_authenticated/_admin/admin/organization'
+    | '/_authenticated/_admin/admin/schedule'
     | '/_authenticated/_admin/admin/sections'
     | '/_authenticated/_admin/admin/subtopics'
     | '/_authenticated/_admin/admin/tags'
@@ -354,6 +380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAdminFlashcardsRouteImport
       parentRoute: typeof AuthenticatedAdminAdminRoute
     }
+    '/_authenticated/_admin/admin/media': {
+      id: '/_authenticated/_admin/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AuthenticatedAdminAdminMediaRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
     '/_authenticated/_admin/admin/metrics': {
       id: '/_authenticated/_admin/admin/metrics'
       path: '/metrics'
@@ -366,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/organization'
       fullPath: '/admin/organization'
       preLoaderRoute: typeof AuthenticatedAdminAdminOrganizationRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/schedule': {
+      id: '/_authenticated/_admin/admin/schedule'
+      path: '/schedule'
+      fullPath: '/admin/schedule'
+      preLoaderRoute: typeof AuthenticatedAdminAdminScheduleRouteImport
       parentRoute: typeof AuthenticatedAdminAdminRoute
     }
     '/_authenticated/_admin/admin/sections': {
@@ -441,8 +481,10 @@ const AuthenticatedAdminAdminFlashcardsRouteWithChildren =
 interface AuthenticatedAdminAdminRouteChildren {
   AuthenticatedAdminAdminAreasRoute: typeof AuthenticatedAdminAdminAreasRoute
   AuthenticatedAdminAdminFlashcardsRoute: typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  AuthenticatedAdminAdminMediaRoute: typeof AuthenticatedAdminAdminMediaRoute
   AuthenticatedAdminAdminMetricsRoute: typeof AuthenticatedAdminAdminMetricsRoute
   AuthenticatedAdminAdminOrganizationRoute: typeof AuthenticatedAdminAdminOrganizationRoute
+  AuthenticatedAdminAdminScheduleRoute: typeof AuthenticatedAdminAdminScheduleRoute
   AuthenticatedAdminAdminSectionsRoute: typeof AuthenticatedAdminAdminSectionsRoute
   AuthenticatedAdminAdminSubtopicsRoute: typeof AuthenticatedAdminAdminSubtopicsRoute
   AuthenticatedAdminAdminTagsRoute: typeof AuthenticatedAdminAdminTagsRoute
@@ -455,9 +497,11 @@ const AuthenticatedAdminAdminRouteChildren: AuthenticatedAdminAdminRouteChildren
     AuthenticatedAdminAdminAreasRoute: AuthenticatedAdminAdminAreasRoute,
     AuthenticatedAdminAdminFlashcardsRoute:
       AuthenticatedAdminAdminFlashcardsRouteWithChildren,
+    AuthenticatedAdminAdminMediaRoute: AuthenticatedAdminAdminMediaRoute,
     AuthenticatedAdminAdminMetricsRoute: AuthenticatedAdminAdminMetricsRoute,
     AuthenticatedAdminAdminOrganizationRoute:
       AuthenticatedAdminAdminOrganizationRoute,
+    AuthenticatedAdminAdminScheduleRoute: AuthenticatedAdminAdminScheduleRoute,
     AuthenticatedAdminAdminSectionsRoute: AuthenticatedAdminAdminSectionsRoute,
     AuthenticatedAdminAdminSubtopicsRoute:
       AuthenticatedAdminAdminSubtopicsRoute,
