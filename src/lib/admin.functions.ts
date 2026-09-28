@@ -49,10 +49,10 @@ export const saveTaxonomy = createServerFn({ method: "POST" }).middleware([requi
   .handler(async ({ context, data }) => {
     await check(context);
     const payload: Record<string, unknown> = { name: data.name, slug: data.slug, is_active: data.isActive };
-    if (data.table !== "tags") payload.description = data.description;
-    if (data.table === "topics") { if (!data.parentId) throw new Error("Selecione uma área."); payload.area_id = data.parentId; }
-    if (data.table === "subtopics") { if (!data.parentId) throw new Error("Selecione um tema."); payload.topic_id = data.parentId; }
-    const query = context.supabase.from(data.table);
+    if (data.table !== "tags") payload["description"] = data.description;
+    if (data.table === "topics") { if (!data.parentId) throw new Error("Selecione uma área."); payload["area_id"] = data.parentId; }
+    if (data.table === "subtopics") { if (!data.parentId) throw new Error("Selecione um tema."); payload["topic_id"] = data.parentId; }
+    const query = context.supabase.from(data.table) as any;
     const result = data.id ? await query.update(payload).eq("id", data.id).select("id").single() : await query.insert(payload).select("id").single();
     fail(result.error); return result.data;
   });
@@ -86,7 +86,7 @@ export const saveCard = createServerFn({ method: "POST" }).middleware([requireSu
     if (removeTags.length) fail((await db.from("flashcard_tags").delete().eq("flashcard_id", cardId).in("tag_id", removeTags)).error);
     const addTags = data.tagIds.filter(x => !oldTags.includes(x));
     if (addTags.length) fail((await db.from("flashcard_tags").insert(addTags.map(tag_id => ({ flashcard_id: cardId, tag_id })))).error);
-    return { id: cardId, version: result.data.version };
+    return { id: cardId, version: result.data?.version ?? 1 };
   });
 
 export const listCards = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
@@ -184,10 +184,10 @@ export const saveSchedule = createServerFn({ method: "POST" }).middleware([requi
       const result = await db.from("weekly_schedules").insert({ section_id: data.sectionId, week_start_date: data.week, created_by: context.userId, status: "draft" }).select("id").single(); fail(result.error); scheduleId = result.data?.id;
     }
     if (!scheduleId) throw new Error("Não foi possível criar a programação.");
-    const days = [1, 3, 5];
-    const rows = data.topics.map((topic_id, index) => ({ weekly_schedule_id: scheduleId, topic_id, release_day: days[index], release_order: index + 1 }));
+    const days = [1, 3, 5] as const;
+    const rows = data.topics.map((topic_id, index) => ({ weekly_schedule_id: scheduleId, topic_id, release_day: days[index] ?? 1, release_order: index + 1 }));
     // 00:00 in Fortaleza is 03:00 UTC; the existing trigger checks the local release date.
-    const items = rows.map((row, index) => ({ ...row, release_at: new Date(Date.parse(`${data.week}T03:00:00Z`) + (days[index] - 1) * 86400000).toISOString() }));
+    const items = rows.map((row, index) => ({ ...row, release_at: new Date(Date.parse(`${data.week}T03:00:00Z`) + (days[index] ?? 1 - 1) * 86400000).toISOString() }));
     fail((await db.from("weekly_schedule_items").insert(items)).error);
     if (data.publish) fail((await db.from("weekly_schedules").update({ status: "published" }).eq("id", scheduleId)).error);
     return { id: scheduleId };
