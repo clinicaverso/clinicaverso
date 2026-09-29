@@ -93,8 +93,8 @@ export const listCards = createServerFn({ method: "POST" }).middleware([requireS
   .inputValidator(raw => z.object({ page: z.number().int().min(1).default(1), search: z.string().default(""), section: z.string().default(""), area: z.string().default(""), topic: z.string().default(""), subtopic: z.string().default(""), status: z.string().default(""), difficulty: z.string().default(""), sort: z.enum(["newest", "oldest", "code", "question"]).default("newest") }).parse(raw))
   .handler(async ({ context, data }) => {
     await check(context);
-    const columns = "id,code,question,status,editorial_difficulty,version,updated_at,topic_id,subtopic_id,topics(id,name,area_id,areas(name)),subtopics(name),flashcard_sections(section_id,sections(name))";
-    let query = context.supabase.from("flashcards").select(columns, { count: "exact" });
+    const columns = "id,code,question,status,editorial_difficulty,version,updated_at,topic_id,subtopic_id,topics%s(id,name,area_id,areas(name)),subtopics(name),flashcard_sections%s(section_id,sections(name))";
+    let query = context.supabase.from("flashcards").select(columns.replace("%s", data.area ? "!inner" : "").replace("%s", data.section ? "!inner" : ""), { count: "exact" });
     if (data.search.trim()) { const search = cleanSearch(data.search); query = query.or(`code.ilike.%${search}%,question.ilike.%${search}%`); }
     if (data.topic) query = query.eq("topic_id", data.topic);
     if (data.subtopic) query = query.eq("subtopic_id", data.subtopic);
@@ -173,6 +173,7 @@ export const getSchedules = createServerFn({ method: "POST" }).middleware([requi
 export const saveSchedule = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id: id.optional(), sectionId: id, week: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), topics: z.array(id).length(3), publish: z.boolean() }).parse(raw))
   .handler(async ({ context, data }) => {
     await check(context, true);
+    if (new Date(`${data.week}T12:00:00Z`).getUTCDay() !== 1) throw new Error("A semana deve começar em uma segunda-feira.");
     if (new Set(data.topics).size !== 3) throw new Error("Selecione três temas diferentes.");
     const db = context.supabase;
     let scheduleId = data.id;
@@ -187,7 +188,7 @@ export const saveSchedule = createServerFn({ method: "POST" }).middleware([requi
     const days = [1, 3, 5] as const;
     const rows = data.topics.map((topic_id, index) => ({ weekly_schedule_id: scheduleId, topic_id, release_day: days[index] ?? 1, release_order: index + 1 }));
     // 00:00 in Fortaleza is 03:00 UTC; the existing trigger checks the local release date.
-    const items = rows.map((row, index) => ({ ...row, release_at: new Date(Date.parse(`${data.week}T03:00:00Z`) + (days[index] ?? 1 - 1) * 86400000).toISOString() }));
+    const items = rows.map((row, index) => ({ ...row, release_at: new Date(Date.parse(`${data.week}T03:00:00Z`) + ((days[index] ?? 1) - 1) * 86400000).toISOString() }));
     fail((await db.from("weekly_schedule_items").insert(items)).error);
     if (data.publish) fail((await db.from("weekly_schedules").update({ status: "published" }).eq("id", scheduleId)).error);
     return { id: scheduleId };
