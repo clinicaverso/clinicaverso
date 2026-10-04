@@ -6,6 +6,20 @@ import type { Json } from "@/integrations/supabase/types";
 const id = z.string().uuid();
 const role = z.enum(["student", "editor", "admin"]);
 const cardStatus = z.enum(["draft", "published", "archived"]);
+type AdminCardListRow = {
+  id: string;
+  code: string;
+  question: string;
+  status: "draft" | "published" | "archived";
+  editorial_difficulty: string;
+  version: number;
+  updated_at: string;
+  topic_id: string;
+  subtopic_id: string | null;
+  topics: { id: string; name: string; area_id: string; areas: { name: string } | null } | null;
+  subtopics: { name: string } | null;
+  flashcard_sections: Array<{ section_id: string; sections: { name: string } | null }>;
+};
 const check = async (context: { supabase: any; userId: string }, admin = false) => {
   const { data, error } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId);
   if (error || !data?.some((row: { role: string }) => admin ? row.role === "admin" : ["admin", "editor"].includes(row.role))) throw new Error("Sem permissão para esta operação.");
@@ -104,7 +118,8 @@ export const listCards = createServerFn({ method: "POST" }).middleware([requireS
     if (data.section) query = query.eq("flashcard_sections.section_id", data.section);
     const sortColumn = data.sort === "code" ? "code" : data.sort === "question" ? "question" : "updated_at";
     const { data: rows, count, error } = await query.order(sortColumn, { ascending: data.sort === "oldest" || data.sort === "code" || data.sort === "question" }).range((data.page - 1) * 25, data.page * 25 - 1);
-    fail(error); return { rows: rows ?? [], count: count ?? 0 };
+    fail(error);
+    return { rows: (rows ?? []) as unknown as AdminCardListRow[], count: count ?? 0 };
   });
 
 export const getCard = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id }).parse(raw))

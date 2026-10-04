@@ -3,7 +3,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import LinkExtension from "@tiptap/extension-link";
 import ImageExtension from "@tiptap/extension-image";
 import { Table } from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
@@ -25,7 +24,7 @@ export function CardEditor({ id }: { id?: string }) {
   const navigate = useNavigate(); const qc = useQueryClient(); const taxonomy = useTaxonomy();
   const existing = useQuery({ queryKey: ["admin", "card", id], queryFn: () => getCard({ data: { id: id ?? "" } }), enabled: !!id });
   const [cardId, setCardId] = useState(id ?? ""); const [code, setCode] = useState(""); const [sections, setSections] = useState<string[]>([]); const [tags, setTags] = useState<string[]>([]); const [area, setArea] = useState(""); const [topic, setTopic] = useState(""); const [subtopic, setSubtopic] = useState(""); const [question, setQuestion] = useState(""); const [answer, setAnswer] = useState(""); const [reference, setReference] = useState(""); const [difficulty, setDifficulty] = useState("medium"); const [status, setStatus] = useState("draft"); const [comment, setComment] = useState<JSONContent>(blank); const [dirty, setDirty] = useState(false); const [saving, setSaving] = useState(false); const [message, setMessage] = useState(""); const [error, setError] = useState(""); const [revealed, setRevealed] = useState(false); const [uploading, setUploading] = useState(false); const [placement, setPlacement] = useState<"question" | "answer" | "comment">("question"); const [media, setMedia] = useState<Array<{ id: string; type: string; placement: string; caption: string; alt_text: string; display_order: number; is_active: boolean; url: string }>>([]);
-  const editor = useEditor({ extensions: [StarterKit, LinkExtension, ImageExtension, Table, TableRow, TableHeader, TableCell], content: blank, immediatelyRender: false, onUpdate: ({ editor }) => { setComment(editor.getJSON()); setDirty(true); } });
+  const editor = useEditor({ extensions: [StarterKit, ImageExtension, Table, TableRow, TableHeader, TableCell], content: blank, immediatelyRender: false, onUpdate: ({ editor }) => { setComment(editor.getJSON()); setDirty(true); } });
   useEffect(() => { const x = existing.data; if (!x?.card) return; const c = x.card; setCardId(c.id); setCode(c.code); setSections(x.sectionIds); setTags(x.tagIds); setTopic(c.topic_id); setArea(taxonomy.data?.topics.find(t => t.id === c.topic_id)?.area_id ?? ""); setSubtopic(c.subtopic_id ?? ""); setQuestion(c.question); setAnswer(c.short_answer); setReference(c.reference); setDifficulty(c.editorial_difficulty); setStatus(c.status); const doc = c.comment && typeof c.comment === "object" && !Array.isArray(c.comment) ? c.comment as JSONContent : blank; setComment(doc); editor?.commands.setContent(doc); setMedia(x.media); setDirty(false); }, [existing.data, taxonomy.data, editor]);
   const edit = (setter: (x: string) => void) => (x: string) => { setter(x); setDirty(true); setMessage(""); };
   const toggle = (list: string[], setter: (x: string[]) => void, value: string) => { setter(list.includes(value) ? list.filter(x => x !== value) : [...list, value]); setDirty(true); };
