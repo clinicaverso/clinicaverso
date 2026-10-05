@@ -72,7 +72,7 @@ export const saveTaxonomy = createServerFn({ method: "POST" }).middleware([requi
   });
 
 const cardInput = z.object({
-  id: id.optional(), code: z.string().regex(/^CV-[A-Z0-9+-]+-[0-9]{6,}$/), topicId: id, subtopicId: id.nullable(), sectionIds: z.array(id).min(1), tagIds: z.array(id),
+  id: id.optional(), topicId: id, subtopicId: id.nullable(), sectionIds: z.array(id).min(1), tagIds: z.array(id),
   question: z.string().trim().min(1), shortAnswer: z.string().trim().min(1), comment: z.object({ type: z.literal("doc") }).passthrough(),
   reference: z.string(), difficulty: z.enum(["easy", "medium", "hard"]), status: cardStatus,
 });
@@ -80,8 +80,8 @@ export const saveCard = createServerFn({ method: "POST" }).middleware([requireSu
   .handler(async ({ context, data }) => {
     await check(context);
     const db = context.supabase;
-    const fields = { code: data.code, topic_id: data.topicId, subtopic_id: data.subtopicId, question: data.question, short_answer: data.shortAnswer, comment: data.comment as Json, reference: data.reference, editorial_difficulty: data.difficulty, status: data.status, updated_by: context.userId };
-    const result = data.id ? await db.from("flashcards").update(fields).eq("id", data.id).select("id,version").single() : await db.from("flashcards").insert({ ...fields, created_by: context.userId }).select("id,version").single();
+    const fields = { topic_id: data.topicId, subtopic_id: data.subtopicId, question: data.question, short_answer: data.shortAnswer, comment: data.comment as Json, reference: data.reference, editorial_difficulty: data.difficulty, status: data.status, updated_by: context.userId };
+    const result = data.id ? await db.from("flashcards").update(fields).eq("id", data.id).select("id,version,code").single() : await db.from("flashcards").insert({ ...fields, created_by: context.userId }).select("id,version,code").single();
     fail(result.error);
     const cardId = result.data?.id;
     if (!cardId) throw new Error("Não foi possível salvar o card.");
@@ -100,7 +100,7 @@ export const saveCard = createServerFn({ method: "POST" }).middleware([requireSu
     if (removeTags.length) fail((await db.from("flashcard_tags").delete().eq("flashcard_id", cardId).in("tag_id", removeTags)).error);
     const addTags = data.tagIds.filter(x => !oldTags.includes(x));
     if (addTags.length) fail((await db.from("flashcard_tags").insert(addTags.map(tag_id => ({ flashcard_id: cardId, tag_id })))).error);
-    return { id: cardId, version: result.data?.version ?? 1 };
+    return { id: cardId, code: result.data?.code ?? "", version: result.data?.version ?? 1 };
   });
 
 export const listCards = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth])
@@ -136,7 +136,7 @@ export const getCard = createServerFn({ method: "POST" }).middleware([requireSup
     return { card: card.data, sectionIds: (sections.data ?? []).map(x => x.section_id), tagIds: (tags.data ?? []).map(x => x.tag_id), media: (media.data ?? []).map(item => ({ ...item, url: signed.find(x => x.id === item.id)?.url ?? "" })) };
   });
 
-export const duplicateCard = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id, code: z.string().regex(/^CV-[A-Z0-9+-]+-[0-9]{6,}$/) }).parse(raw))
+export const duplicateCard = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id }).parse(raw))
   .handler(async ({ context, data }) => {
     await check(context);
     const db = context.supabase;
@@ -146,7 +146,7 @@ export const duplicateCard = createServerFn({ method: "POST" }).middleware([requ
     [source, sections, tags, media].forEach(result => fail(result.error));
     const card = source.data;
     if (!card) throw new Error("Card não encontrado.");
-    const created = await db.from("flashcards").insert({ code: data.code, topic_id: card.topic_id, subtopic_id: card.subtopic_id, question: card.question, short_answer: card.short_answer, comment: card.comment, reference: card.reference, editorial_difficulty: card.editorial_difficulty, status: "draft", created_by: context.userId, updated_by: context.userId }).select("id").single();
+    const created = await db.from("flashcards").insert({ topic_id: card.topic_id, subtopic_id: card.subtopic_id, question: card.question, short_answer: card.short_answer, comment: card.comment, reference: card.reference, editorial_difficulty: card.editorial_difficulty, status: "draft", created_by: context.userId, updated_by: context.userId }).select("id,code").single();
     fail(created.error);
     const newId = created.data?.id;
     if (!newId) throw new Error("Falha ao duplicar.");
@@ -160,7 +160,7 @@ export const duplicateCard = createServerFn({ method: "POST" }).middleware([requ
       fail(copied.error);
       fail((await db.from("flashcard_media").insert({ flashcard_id: newId, type: item.type, placement: item.placement, storage_path: destination, caption: item.caption, alt_text: item.alt_text, display_order: item.display_order, created_by: context.userId })).error);
     }
-    return { id: newId };
+    return { id: newId, code: created.data?.code ?? "" };
   });
 
 export const archiveCard = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id }).parse(raw))

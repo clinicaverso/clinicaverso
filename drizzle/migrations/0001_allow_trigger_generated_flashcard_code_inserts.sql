@@ -1,0 +1,2 @@
+ALTER TABLE public.flashcards ALTER COLUMN code SET DEFAULT '';
+COMMENT ON COLUMN public.flashcards.code IS 'Immutable global editorial code assigned by private.prepare_flashcard_write on insert; the empty default exists only to allow inserts without supplying a code.';

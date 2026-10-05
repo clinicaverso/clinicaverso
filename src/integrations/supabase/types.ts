@@ -347,7 +347,7 @@ export type Database = {
           version: number
         }
         Insert: {
-          code: string
+          code?: string
           comment?: Json
           created_at?: string
           created_by: string
