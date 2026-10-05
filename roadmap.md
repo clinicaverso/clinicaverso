@@ -25,3 +25,12 @@
 - [ ] Implementar programação semanal
 - [ ] Implementar gestão de usuários e papéis
 - [ ] Validar RLS, versionamento, auditoria, responsividade e regressões
+
+## Homologação do Admin
+
+- [ ] Gerar código editorial CV-CARD-000001 automaticamente e de forma concorrente no banco; exibir após salvar e duplicar sem solicitar código
+- [ ] Homologar criação, publicação, edição e versionamento do card, inclusive mudança apenas de seção
+- [ ] Homologar upload privado, prévia, reabertura e mídia independente após duplicação
+- [ ] Homologar programação de segunda, quarta e sexta com três temas e liberação permanente
+- [ ] Homologar permissões de editor/aluno, RLS, auditoria, arquivamento e histórico imutável
+- [ ] Entregar relatório PASSOU/FALHOU de cada teste, sem avançar para novas funcionalidades
