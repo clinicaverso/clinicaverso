@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791161343935,
+      "tag": "0000_automatic_editorial_flashcard_codes",
+      "breakpoints": true
+    }
+  ]
+}
