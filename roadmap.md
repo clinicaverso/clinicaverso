@@ -34,3 +34,14 @@
 - [ ] Homologar programação de segunda, quarta e sexta com três temas e liberação permanente
 - [ ] Homologar permissões de editor/aluno, RLS, auditoria, arquivamento e histórico imutável
 - [ ] Entregar relatório PASSOU/FALHOU de cada teste, sem avançar para novas funcionalidades
+
+## Fase 3 — Escala Editorial
+
+- [ ] Implementar formato XLSX oficial, modelo e validação sem gravações
+- [ ] Implementar prévia, decisões de duplicatas e confirmação explícita
+- [ ] Implementar importação autorizada, atômica por linha, idempotente e retomável
+- [ ] Implementar histórico, relatórios e exportação filtrada
+- [ ] Inventariar dados temporários e arquivar/desativar somente os comprovados
+- [ ] Corrigir compensação de mídia e consistência de duplicação
+- [ ] Homologar cenários solicitados e informar volume realmente testado
+- [ ] Entregar relatório técnico da Fase 3 sem iniciar Fase 4
