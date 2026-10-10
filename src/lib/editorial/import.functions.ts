@@ -1,0 +1,37 @@
+import { createServerFn } from '@tanstack/react-start';
+import { z } from 'zod';
+import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { readWorkbook, writeWorkbook, MAX_BYTES } from './workbook';
+import { validateRows, type Existing, type Taxonomy } from './model';
+import type { Json } from '@/integrations/supabase/types';
+
+const fileSchema=z.object({filename:z.string().max(255),base64:z.string().max(Math.ceil(MAX_BYTES*4/3)+4),mode:z.enum(['create','update'])});
+const check=async(context:{supabase:any;userId:string})=>{const r=await context.supabase.from('user_roles').select('role').eq('user_id',context.userId);if(r.error||!r.data?.some((x:{role:string})=>['admin','editor'].includes(x.role)))throw new Error('Sem permissão para importar ou exportar cards.');};
+const fail=(e:{message:string}|null)=>{if(e)throw new Error(e.message);};
+async function all(db:any,table:string,columns='*'):Promise<any[]> {const result:any[]=[];for(let page=0;;page++){const r=await db.from(table).select(columns).order('id').range(page*1000,page*1000+999);fail(r.error);result.push(...(r.data??[]));if((r.data??[]).length<1000)break;}return result;}
+async function contextData(db:any){const [areas,topics,subtopics,sections,tags,cards]=await Promise.all(['areas','topics','subtopics','sections','tags','flashcards'].map(t=>all(db,t,t==='flashcards'?'*,flashcard_sections(section_id),flashcard_tags(tag_id)':'*')));const taxonomy={areas,topics,subtopics,sections,tags} as Taxonomy;const existing=(cards??[]).map(c=>({...c,sectionIds:c.flashcard_sections.map((s:any)=>s.section_id),tagIds:c.flashcard_tags.map((t:any)=>t.tag_id)})) as Existing[];return {taxonomy,existing};}
+const decode=(s:string)=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const encode=(b:Uint8Array)=>{let s='';for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(s);};
+async function preview(db:any,data:z.infer<typeof fileSchema>){const bytes=decode(data.base64);const rows=readWorkbook(bytes,data.filename);const context=await contextData(db);return validateRows(rows,context.taxonomy,context.existing,data.mode);}
+export const previewEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>fileSchema.parse(raw)).handler(async({context,data})=>{await check(context);return {rows:await preview(context.supabase,data)};});
+export const confirmEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>fileSchema.extend({decisions:z.record(z.enum(['import','skip'])),confirmed:z.literal(true),expectedDigest:z.string().length(64)}).parse(raw)).handler(async({context,data})=>{
+ await check(context);const rows=await preview(context.supabase,data);
+ const digest=await previewDigest(rows);
+ if(digest!==data.expectedDigest)throw new Error('Os dados mudaram desde a prévia. Valide o arquivo novamente.');
+ const payload=rows.map(r=>{const decision=data.decisions[String(r.line)];if(!r.issues.length&&r.operation!=='skip'&&r.warnings.length&&!decision)throw new Error(`Revise a duplicata na linha ${r.line}.`);return {...r,decision:r.issues.length?'error':r.operation==='skip'||decision==='skip'?'skip':'import',reason:r.issues.map(i=>`${i.column}: ${i.message}`).join('; ')|| (decision==='skip'?'Ignorado por decisão editorial':'')};});
+ if(!payload.some(r=>r.decision==='import'))throw new Error('Nenhuma linha selecionada para importar.');
+ const hash=await crypto.subtle.digest('SHA-256',decode(data.base64));const fingerprint=Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('');
+ const result=await context.supabase.rpc('confirm_editorial_import',{p_filename:data.filename,p_fingerprint:fingerprint,p_mode:data.mode,p_rows:payload as unknown as Json});fail(result.error);return {id:result.data};
+});
+export async function previewDigest(rows:unknown){const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(rows)));return Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('');}
+export const processEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>z.object({id:z.string().uuid()}).parse(raw)).handler(async({context,data})=>{await check(context);const result=await context.supabase.rpc('process_editorial_import',{p_import_id:data.id,p_limit:20});fail(result.error);return {counts:result.data};});
+export const listEditorialImports=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{await check(context);const r=await context.supabase.from('editorial_imports').select('*,profiles: user_id').order('created_at',{ascending:false}).limit(50);if(r.error){const fallback=await context.supabase.from('editorial_imports').select('*').order('created_at',{ascending:false}).limit(50);fail(fallback.error);return fallback.data??[];}return r.data??[];});
+export const getEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>z.object({id:z.string().uuid()}).parse(raw)).handler(async({context,data})=>{await check(context);const job=await context.supabase.from('editorial_imports').select('*').eq('id',data.id).single();fail(job.error);const rows:any[]=[];for(let page=0;;page++){const r=await context.supabase.from('editorial_import_rows').select('*').eq('import_id',data.id).order('line').range(page*1000,page*1000+999);fail(r.error);rows.push(...(r.data??[]));if((r.data??[]).length<1000)break;}return {job:job.data,rows};});
+export const exportEditorialCards=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>z.object({section:z.string().default(''),area:z.string().default(''),topic:z.string().default(''),subtopic:z.string().default(''),status:z.string().default('')}).parse(raw)).handler(async({context,data})=>{
+ await check(context);const {taxonomy:t,existing}=await contextData(context.supabase);const find=(rows:Taxonomy['areas'],id:string|undefined|null)=>rows.find(x=>x.id===id)?.name??'';
+ const filtered=existing.filter(c=>{const topic=t.topics.find(x=>x.id===c.topic_id);return (!data.section||c.sectionIds?.includes(data.section))&&(!data.area||topic?.area_id===data.area)&&(!data.topic||c.topic_id===data.topic)&&(!data.subtopic||c.subtopic_id===data.subtopic)&&(!data.status||c.status===data.status);});
+ if(filtered.length>5000)throw new Error('Exportação excede 5.000 cards; restrinja os filtros.');
+ const rows=filtered.map(c=>({codigo:c.code,secao:(c.sectionIds??[]).map(id=>find(t.sections,id)).join(';'),area:find(t.areas,t.topics.find(x=>x.id===c.topic_id)?.area_id),tema:find(t.topics,c.topic_id),subtema:find(t.subtopics,c.subtopic_id),pergunta:c.question,resposta:c.short_answer??'',comentario:JSON.stringify(c.comment),referencia:c.reference??'',dificuldade:c.editorial_difficulty??'',tags:(c.tagIds??[]).map(id=>find(t.tags,id)).join(';'),status:c.status??''}));
+ if(rows.some(r=>Object.values(r).some(v=>v.length>32767)))throw new Error('Há comentário que excede o limite de célula do Excel; reduza o filtro ou o conteúdo antes de exportar.');
+ return {base64:encode(writeWorkbook(rows)),count:rows.length};
+});
