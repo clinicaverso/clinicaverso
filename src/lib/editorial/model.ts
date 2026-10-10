@@ -3,7 +3,7 @@ export const normalize = (s:string) => s.trim().replace(/\s+/g,' ').toLocaleLowe
 export const names = (s:string) => [...new Set(s.split(';').map(s=>s.trim().replace(/\s+/g,' ')).filter(Boolean))];
 export type Taxon = {id:string;name:string;is_active:boolean;area_id?:string;topic_id?:string};
 export type Taxonomy = {areas:Taxon[];topics:Taxon[];subtopics:Taxon[];sections:Taxon[];tags:Taxon[]};
-export type Existing = {id:string;code:string;question:string;updated_at:string; [key:string]: any};
+export type Existing = {id:string;code:string;question:string;updated_at:string; short_answer?:string; comment?:unknown; topic_id?:string; subtopic_id?:string|null; reference?:string; editorial_difficulty?:string; status?:string; sectionIds?:string[]; tagIds?:string[]};
 export type PreviewRow = SheetRow & {operation:'create'|'update'|'skip'; warnings:string[]; proposed:string[]; expected:string|null; comment:Record<string,any>|null; changed?:string[]};
 const nodeTypes = new Set(['doc','paragraph','text','heading','bulletList','orderedList','listItem','blockquote','codeBlock','hardBreak','horizontalRule','table','tableRow','tableCell','tableHeader','image']);
 const markTypes = new Set(['bold','italic','strike','code','underline','link']);

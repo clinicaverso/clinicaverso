@@ -1,0 +1,23 @@
+import { describe, it, expect } from 'vitest';
+import { readWorkbook, writeWorkbook, modelRows, COLUMNS } from './workbook';
+import { validateRows, safeComment, normalize, type Taxonomy } from './model';
+const taxonomy:Taxonomy={sections:[{id:'section',name:'R1CM',is_active:true}],areas:[{id:'area',name:'Cardiologia',is_active:true}],topics:[{id:'topic',name:'Tema',area_id:'area',is_active:true}],subtopics:[],tags:[]};
+const row=(extra:Record<string,string>={})=>readWorkbook(writeWorkbook([{secao:'R1CM',area:'Cardiologia',tema:'Tema',pergunta:'Pergunta única?',resposta:'Resposta',comentario:'Comentário',...extra}]),'test.xlsx');
+describe('Regras editoriais XLSX',()=>{
+ it('10 novos cards válidos com códigos vazios',()=>{const r=readWorkbook(writeWorkbook(Array.from({length:10},(_,i)=>({...modelRows()[0],pergunta:`Identificador ${i} teste`} as Record<string,string>))),'10.xlsx');expect(r).toHaveLength(10);expect(validateRows(r,taxonomy,[],'create').every(x=>x.operation==='create'&&!x.issues.length)).toBe(true);});
+ it('50 cards em três áreas preservam linhas reais',()=>{const r=readWorkbook(writeWorkbook(Array.from({length:50},(_,i)=>({...modelRows()[i%3],pergunta:`Teste ${i}`} as Record<string,string>))),'50.xlsx');expect(r).toHaveLength(50);expect(r[49]?.line).toBe(51);expect(new Set(r.map(x=>x.cells.area)).size).toBe(3);});
+ it('campos obrigatórios vazios bloqueiam',()=>expect(validateRows(row({resposta:''}),taxonomy,[],'create')[0]?.issues.some(x=>x.column==='resposta')).toBe(true));
+ it('seções desconhecidas bloqueiam sem propostas de seção',()=>{const r=validateRows(row({secao:'Inexistente'}),taxonomy,[],'create')[0];expect(r?.issues.some(x=>x.column==='secao')).toBe(true);expect(r?.proposed.some(x=>x.includes('Seção'))).toBe(false);});
+ it('perguntas idênticas normalizadas exigem decisão',()=>{const r=row();r.push({...r[0],line:3,cells:{...r[0]?.cells,pergunta:'  PERGUNTA   ÚNICA? '}} as typeof r[number]);expect(validateRows(r,taxonomy,[],'create')[1]?.warnings.length).toBe(1);});
+ it('código desconhecido não vira criação',()=>expect(validateRows(row({codigo:'CV-CARD-999999'}),taxonomy,[],'update')[0]?.issues.some(x=>x.column==='codigo')).toBe(true));
+ it('códigos conhecidos não sobrescrevem no modo criar',()=>{expect(validateRows(row({codigo:'CV-CARD-000001'}),taxonomy,[{id:'x',code:'CV-CARD-000001',question:'Antiga',updated_at:'now'}],'create')[0]?.operation).toBe('skip');});
+ it('dificuldade inválida bloqueia',()=>expect(validateRows(row({dificuldade:'normal'}),taxonomy,[],'create')[0]?.issues.some(x=>x.column==='dificuldade')).toBe(true));
+ it('status vazio é mantido para default draft no executor',()=>expect(validateRows(row(),taxonomy,[],'create')[0]?.cells.status).toBe(''));
+ it('HTML não pode virar comentário',()=>expect(()=>safeComment('<script>alert(1)</script>')).toThrow());
+ it('links javascript bloqueados',()=>expect(()=>safeComment(JSON.stringify({type:'doc',content:[{type:'paragraph',content:[{type:'text',text:'x',marks:[{type:'link',attrs:{href:'javascript:alert(1)'}}]}]}]}))).toThrow());
+ it('JSON rico faz ida e volta com marca bold',()=>{const doc={type:'doc',content:[{type:'paragraph',content:[{type:'text',text:'Olá',marks:[{type:'bold'}]}]}]};expect(safeComment(row({comentario:JSON.stringify(doc)})[0]?.cells.comentario??'')).toEqual(doc);});
+ it('texto exportado como fórmula permanece texto literal',()=>expect(row({pergunta:'=HYPERLINK("evil")'})[0]?.cells.pergunta).toBe('=HYPERLINK("evil")'));
+ it('modelo contém 12 colunas e só Cards é lida',()=>{expect(COLUMNS).toHaveLength(12);expect(readWorkbook(writeWorkbook(modelRows()),'modelo.xlsx')).toHaveLength(3);});
+ it('normalização reconhece espaços e caixa',()=>expect(normalize('  CARDIOLOGIA   Clínica ')).toBe('cardiologia clínica'));
+ it('5.000 linhas são lidas e acima do limite recusado',()=>{const data=Array.from({length:5000},(_,i)=>({...modelRows()[0],pergunta:`Volume ${i}`} as Record<string,string>));expect(readWorkbook(writeWorkbook(data),'volume.xlsx')).toHaveLength(5000);expect(()=>readWorkbook(writeWorkbook([...data,data[0]??{}]),'excesso.xlsx')).toThrow('5.000');});
+});
