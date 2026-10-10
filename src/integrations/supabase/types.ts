@@ -77,6 +77,93 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_import_rows: {
+        Row: {
+          code: string | null
+          flashcard_id: string | null
+          import_id: string
+          line: number
+          message: string
+          operation: string
+          payload: Json
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          flashcard_id?: string | null
+          import_id: string
+          line: number
+          message?: string
+          operation: string
+          payload: Json
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          flashcard_id?: string | null
+          import_id?: string
+          line?: number
+          message?: string
+          operation?: string
+          payload?: Json
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editorial_import_rows_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "editorial_import_rows_import_id_fkey"
+            columns: ["import_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_imports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      editorial_imports: {
+        Row: {
+          created_at: string
+          filename: string
+          fingerprint: string
+          id: string
+          mode: string
+          status: string
+          total_rows: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          filename: string
+          fingerprint: string
+          id?: string
+          mode: string
+          status?: string
+          total_rows: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          filename?: string
+          fingerprint?: string
+          id?: string
+          mode?: string
+          status?: string
+          total_rows?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       flashcard_media: {
         Row: {
           alt_text: string
@@ -821,7 +908,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      confirm_editorial_import: {
+        Args: {
+          p_filename: string
+          p_fingerprint: string
+          p_mode: string
+          p_rows: Json
+        }
+        Returns: string
+      }
+      editorial_normalize: { Args: { value: string }; Returns: string }
+      editorial_resolve_taxon: {
+        Args: { kind: string; label: string; parent?: string }
+        Returns: string
+      }
+      process_editorial_import: {
+        Args: { p_import_id: string; p_limit?: number }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "student" | "editor"

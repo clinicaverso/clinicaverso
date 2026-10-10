@@ -21,6 +21,7 @@ import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as AuthenticatedAdminAdminAreasRouteImport } from './routes/_authenticated/_admin/admin.areas'
 import { Route as AuthenticatedAdminAdminFlashcardsRouteImport } from './routes/_authenticated/_admin/admin.flashcards'
+import { Route as AuthenticatedAdminAdminImportRouteImport } from './routes/_authenticated/_admin/admin.import'
 import { Route as AuthenticatedAdminAdminMediaRouteImport } from './routes/_authenticated/_admin/admin.media'
 import { Route as AuthenticatedAdminAdminMetricsRouteImport } from './routes/_authenticated/_admin/admin.metrics'
 import { Route as AuthenticatedAdminAdminOrganizationRouteImport } from './routes/_authenticated/_admin/admin.organization'
@@ -94,6 +95,12 @@ const AuthenticatedAdminAdminFlashcardsRoute =
   AuthenticatedAdminAdminFlashcardsRouteImport.update({
     id: '/flashcards',
     path: '/flashcards',
+    getParentRoute: () => AuthenticatedAdminAdminRoute,
+  } as any)
+const AuthenticatedAdminAdminImportRoute =
+  AuthenticatedAdminAdminImportRouteImport.update({
+    id: '/import',
+    path: '/import',
     getParentRoute: () => AuthenticatedAdminAdminRoute,
   } as any)
 const AuthenticatedAdminAdminMediaRoute =
@@ -179,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  '/admin/import': typeof AuthenticatedAdminAdminImportRoute
   '/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
@@ -201,6 +209,7 @@ export interface FileRoutesByTo {
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
+  '/admin/import': typeof AuthenticatedAdminAdminImportRoute
   '/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
@@ -228,6 +237,7 @@ export interface FileRoutesById {
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
   '/_authenticated/_admin/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/_authenticated/_admin/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  '/_authenticated/_admin/admin/import': typeof AuthenticatedAdminAdminImportRoute
   '/_authenticated/_admin/admin/media': typeof AuthenticatedAdminAdminMediaRoute
   '/_authenticated/_admin/admin/metrics': typeof AuthenticatedAdminAdminMetricsRoute
   '/_authenticated/_admin/admin/organization': typeof AuthenticatedAdminAdminOrganizationRoute
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/areas'
     | '/admin/flashcards'
+    | '/admin/import'
     | '/admin/media'
     | '/admin/metrics'
     | '/admin/organization'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/profile'
     | '/admin/areas'
+    | '/admin/import'
     | '/admin/media'
     | '/admin/metrics'
     | '/admin/organization'
@@ -302,6 +314,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_admin/admin'
     | '/_authenticated/_admin/admin/areas'
     | '/_authenticated/_admin/admin/flashcards'
+    | '/_authenticated/_admin/admin/import'
     | '/_authenticated/_admin/admin/media'
     | '/_authenticated/_admin/admin/metrics'
     | '/_authenticated/_admin/admin/organization'
@@ -407,6 +420,13 @@ declare module '@tanstack/react-router' {
       path: '/flashcards'
       fullPath: '/admin/flashcards'
       preLoaderRoute: typeof AuthenticatedAdminAdminFlashcardsRouteImport
+      parentRoute: typeof AuthenticatedAdminAdminRoute
+    }
+    '/_authenticated/_admin/admin/import': {
+      id: '/_authenticated/_admin/admin/import'
+      path: '/import'
+      fullPath: '/admin/import'
+      preLoaderRoute: typeof AuthenticatedAdminAdminImportRouteImport
       parentRoute: typeof AuthenticatedAdminAdminRoute
     }
     '/_authenticated/_admin/admin/media': {
@@ -520,6 +540,7 @@ const AuthenticatedAdminAdminFlashcardsRouteWithChildren =
 interface AuthenticatedAdminAdminRouteChildren {
   AuthenticatedAdminAdminAreasRoute: typeof AuthenticatedAdminAdminAreasRoute
   AuthenticatedAdminAdminFlashcardsRoute: typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
+  AuthenticatedAdminAdminImportRoute: typeof AuthenticatedAdminAdminImportRoute
   AuthenticatedAdminAdminMediaRoute: typeof AuthenticatedAdminAdminMediaRoute
   AuthenticatedAdminAdminMetricsRoute: typeof AuthenticatedAdminAdminMetricsRoute
   AuthenticatedAdminAdminOrganizationRoute: typeof AuthenticatedAdminAdminOrganizationRoute
@@ -537,6 +558,7 @@ const AuthenticatedAdminAdminRouteChildren: AuthenticatedAdminAdminRouteChildren
     AuthenticatedAdminAdminAreasRoute: AuthenticatedAdminAdminAreasRoute,
     AuthenticatedAdminAdminFlashcardsRoute:
       AuthenticatedAdminAdminFlashcardsRouteWithChildren,
+    AuthenticatedAdminAdminImportRoute: AuthenticatedAdminAdminImportRoute,
     AuthenticatedAdminAdminMediaRoute: AuthenticatedAdminAdminMediaRoute,
     AuthenticatedAdminAdminMetricsRoute: AuthenticatedAdminAdminMetricsRoute,
     AuthenticatedAdminAdminOrganizationRoute:
