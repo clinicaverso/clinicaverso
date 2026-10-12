@@ -11,7 +11,7 @@ import {
   Layers3,
   LogOut,
   Menu,
-  Image, Tags, CalendarDays, Grid2X2, ListTree, FolderTree, MoreHorizontal,
+  Image, Tags, CalendarDays, Grid2X2, ListTree, FolderTree, MoreHorizontal, FileSpreadsheet,
   Users,
   X,
 } from "lucide-react";
@@ -47,6 +47,7 @@ const adminGroups = [
   { label: "Visão geral", items: [{ label: "Dashboard", to: "/admin", icon: Home, adminOnly: true }] },
   { label: "Conteúdo", items: [
     { label: "Cards", to: "/admin/flashcards", icon: Layers3 },
+    { label: "Importar cards", to: "/admin/import", icon: FileSpreadsheet },
     { label: "Seções", to: "/admin/sections", icon: Grid2X2 },
     { label: "Áreas", to: "/admin/areas", icon: BookOpen },
     { label: "Temas", to: "/admin/topics", icon: FolderTree },

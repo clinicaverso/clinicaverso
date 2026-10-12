@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -916,6 +916,15 @@ export type Database = {
           p_rows: Json
         }
         Returns: string
+      }
+      duplicate_editorial_card: {
+        Args: {
+          p_expected: string
+          p_media: Json
+          p_new_id: string
+          p_source: string
+        }
+        Returns: Json
       }
       editorial_normalize: { Args: { value: string }; Returns: string }
       editorial_resolve_taxon: {
