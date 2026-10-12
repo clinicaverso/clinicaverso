@@ -140,27 +140,35 @@ export const duplicateCard = createServerFn({ method: "POST" }).middleware([requ
   .handler(async ({ context, data }) => {
     await check(context);
     const db = context.supabase;
-    const [source, sections, tags, media] = await Promise.all([
-      db.from("flashcards").select("*").eq("id", data.id).single(), db.from("flashcard_sections").select("section_id").eq("flashcard_id", data.id), db.from("flashcard_tags").select("tag_id").eq("flashcard_id", data.id), db.from("flashcard_media").select("*").eq("flashcard_id", data.id).eq("is_active", true),
+    const [source, media] = await Promise.all([
+      db.from("flashcards").select("id,updated_at").eq("id", data.id).single(),
+      db.from("flashcard_media").select("id,storage_path").eq("flashcard_id", data.id).eq("is_active", true),
     ]);
-    [source, sections, tags, media].forEach(result => fail(result.error));
-    const card = source.data;
-    if (!card) throw new Error("Card não encontrado.");
-    const created = await db.from("flashcards").insert({ topic_id: card.topic_id, subtopic_id: card.subtopic_id, question: card.question, short_answer: card.short_answer, comment: card.comment, reference: card.reference, editorial_difficulty: card.editorial_difficulty, status: "draft", created_by: context.userId, updated_by: context.userId }).select("id,code").single();
-    fail(created.error);
-    const newId = created.data?.id;
-    if (!newId) throw new Error("Falha ao duplicar.");
-    if (sections.data?.length) fail((await db.from("flashcard_sections").insert(sections.data.map(x => ({ flashcard_id: newId, section_id: x.section_id })))).error);
-    if (tags.data?.length) fail((await db.from("flashcard_tags").insert(tags.data.map(x => ({ flashcard_id: newId, tag_id: x.tag_id })))).error);
-    // Copy private files rather than referring two media rows to the same mutable object.
-    for (const item of media.data ?? []) {
-      const extension = item.storage_path.split(".").pop() ?? "bin";
-      const destination = `${newId}/${crypto.randomUUID()}.${extension}`;
-      const copied = await db.storage.from("flashcard-media").copy(item.storage_path, destination);
-      fail(copied.error);
-      fail((await db.from("flashcard_media").insert({ flashcard_id: newId, type: item.type, placement: item.placement, storage_path: destination, caption: item.caption, alt_text: item.alt_text, display_order: item.display_order, created_by: context.userId })).error);
+    fail(source.error); fail(media.error);
+    if (!source.data) throw new Error("Card não encontrado.");
+    const newId = crypto.randomUUID();
+    const copied: Array<{source_id:string;path:string}> = [];
+    try {
+      for (const item of media.data ?? []) {
+        const extension = item.storage_path.split(".").pop() ?? "bin";
+        const path = `${newId}/${crypto.randomUUID()}.${extension}`;
+        const result = await db.storage.from("flashcard-media").copy(item.storage_path, path);
+        fail(result.error); copied.push({source_id:item.id,path});
+      }
+      const result = await db.rpc("duplicate_editorial_card", {p_source:data.id,p_new_id:newId,p_expected:source.data.updated_at,p_media:copied});
+      fail(result.error);
+      const value = result.data as {id:string;code:string;version:number};
+      return value;
+    } catch (error) {
+      // A lost RPC response may hide a committed transaction: never remove referenced files.
+      const committed = await db.from("flashcards").select("id,code,version").eq("id",newId).maybeSingle();
+      if (committed.data) return committed.data;
+      if (!committed.error && copied.length) {
+        const cleanup = await db.storage.from("flashcard-media").remove(copied.map(x=>x.path));
+        if (cleanup.error) console.error("Failed to clean uncommitted duplicate media");
+      }
+      throw error;
     }
-    return { id: newId, code: created.data?.code ?? "" };
   });
 
 export const archiveCard = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(raw => z.object({ id }).parse(raw))
@@ -172,6 +180,15 @@ export const saveMedia = createServerFn({ method: "POST" }).middleware([requireS
     await check(context);
     const fields = { placement: data.placement, caption: data.caption, alt_text: data.altText, display_order: data.order, is_active: data.active };
     const result = data.id ? await context.supabase.from("flashcard_media").update(fields).eq("id", data.id).eq("flashcard_id", data.cardId).select("id").single() : await context.supabase.from("flashcard_media").insert({ ...fields, flashcard_id: data.cardId, storage_path: data.path ?? "", type: data.type ?? "image", created_by: context.userId }).select("id").single();
+    if (result.error && !data.id && data.path) {
+      // Delete only an unlinked object owned by this card; response loss must not delete committed media.
+      const linked = await context.supabase.from("flashcard_media").select("id").eq("storage_path",data.path).maybeSingle();
+      if (linked.data) return linked.data;
+      if (!linked.error && data.path.startsWith(`${data.cardId}/`)) {
+        const cleaned = await context.supabase.storage.from("flashcard-media").remove([data.path]);
+        if (cleaned.error) console.error("Failed to clean unlinked upload");
+      }
+    }
     fail(result.error); return result.data;
   });
 
