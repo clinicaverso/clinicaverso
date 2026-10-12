@@ -917,6 +917,15 @@ export type Database = {
         }
         Returns: string
       }
+      duplicate_editorial_card: {
+        Args: {
+          p_expected: string
+          p_media: Json
+          p_new_id: string
+          p_source: string
+        }
+        Returns: Json
+      }
       editorial_normalize: { Args: { value: string }; Returns: string }
       editorial_resolve_taxon: {
         Args: { kind: string; label: string; parent?: string }
