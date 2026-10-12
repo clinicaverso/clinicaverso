@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { readWorkbook, writeWorkbook, MAX_BYTES } from './workbook';
-import { validateRows, type Existing, type Taxonomy } from './model';
+import { canonical, validateRows, type Existing, type Taxonomy } from './model';
 import type { Json } from '@/integrations/supabase/types';
 
 const fileSchema=z.object({filename:z.string().max(255),base64:z.string().max(Math.ceil(MAX_BYTES*4/3)+4),mode:z.enum(['create','update'])});
@@ -18,12 +18,14 @@ export const confirmEditorialImport=createServerFn({method:'POST'}).middleware([
  await check(context);const rows=await preview(context.supabase,data);
  const digest=await previewDigest(rows);
  if(digest!==data.expectedDigest)throw new Error('Os dados mudaram desde a prévia. Valide o arquivo novamente.');
+ const bytesHash=await crypto.subtle.digest('SHA-256',decode(data.base64));const fingerprint=Array.from(new Uint8Array(bytesHash),x=>x.toString(16).padStart(2,'0')).join('');
+ const previous=await context.supabase.from('editorial_imports').select('id').eq('user_id',context.userId).eq('fingerprint',fingerprint).eq('mode',data.mode).maybeSingle();fail(previous.error);if(previous.data)throw new Error('Este arquivo já foi confirmado neste modo. Consulte ou retome a operação no Histórico. Para corrigir linhas com erro, envie um arquivo corrigido com somente essas linhas.');
  const payload=rows.map(r=>{const decision=data.decisions[String(r.line)];if(!r.issues.length&&r.operation!=='skip'&&r.warnings.length&&!decision)throw new Error(`Revise a duplicata na linha ${r.line}.`);return {...r,decision:r.issues.length?'error':r.operation==='skip'||decision==='skip'?'skip':'import',reason:r.issues.map(i=>`${i.column}: ${i.message}`).join('; ')|| (decision==='skip'?'Ignorado por decisão editorial':'')};});
  if(!payload.some(r=>r.decision==='import'))throw new Error('Nenhuma linha selecionada para importar.');
- const hash=await crypto.subtle.digest('SHA-256',decode(data.base64));const fingerprint=Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('');
+
  const result=await context.supabase.rpc('confirm_editorial_import',{p_filename:data.filename,p_fingerprint:fingerprint,p_mode:data.mode,p_rows:payload as unknown as Json});fail(result.error);return {id:result.data};
 });
-export async function previewDigest(rows:unknown){const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(rows)));return Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('');}
+export async function previewDigest(rows:unknown){const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical(rows)));return Array.from(new Uint8Array(hash),x=>x.toString(16).padStart(2,'0')).join('');}
 export const processEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>z.object({id:z.string().uuid()}).parse(raw)).handler(async({context,data})=>{await check(context);const result=await context.supabase.rpc('process_editorial_import',{p_import_id:data.id,p_limit:20});fail(result.error);return {counts:result.data};});
 export const listEditorialImports=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{await check(context);const r=await context.supabase.from('editorial_imports').select('*').order('created_at',{ascending:false}).limit(50);fail(r.error);const profiles=await context.supabase.from('profiles').select('id,display_name');return (r.data??[]).map(job=>({...job,author:profiles.data?.find(p=>p.id===job.user_id)?.display_name||'Editor'}));});
 export const getEditorialImport=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(raw=>z.object({id:z.string().uuid()}).parse(raw)).handler(async({context,data})=>{await check(context);const job=await context.supabase.from('editorial_imports').select('*').eq('id',data.id).single();fail(job.error);const rows:any[]=[];for(let page=0;;page++){const r=await context.supabase.from('editorial_import_rows').select('*').eq('import_id',data.id).order('line').range(page*1000,page*1000+999);fail(r.error);rows.push(...(r.data??[]));if((r.data??[]).length<1000)break;}return {job:job.data,rows};});

@@ -38,6 +38,7 @@ export function readWorkbook(bytes: Uint8Array, filename: string): SheetRow[] {
   if (COLUMNS.some(c=>!names.has(c))) throw new Error('A planilha deve conter as 12 colunas do modelo oficial.');
   const result: SheetRow[] = [];
   for (const row of rows) {
+    if (list<any>(row.c).length>24) throw new Error('Número excessivo de células na linha.');
     const line = Number(row['@_r']); if (line===1) continue;
     if (!Number.isInteger(line) || line<2 || line>MAX_ROWS+1 || result.some(r=>r.line===line)) throw new Error('Numeração de linhas inválida ou limite excedido.');
     const cells = Object.fromEntries(COLUMNS.map(c=>[c,''])) as Record<Column,string>; const issues: SheetRow['issues']=[];
