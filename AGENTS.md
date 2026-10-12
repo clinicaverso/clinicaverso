@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Generate immutable editorial flashcard codes using a database sequence and trigger, never client-side, because concurrent creates must remain globally unique across sections.
+- Keep XLSX parsing and editorial validation in the editorial module; confirm and process durable imports through authenticated transactional database functions, because retries must preserve per-row atomicity and existing content triggers.
