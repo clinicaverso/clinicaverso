@@ -29,6 +29,13 @@
       "when": 1791842902095,
       "tag": "0003_atomic_editorial_media_duplication",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791938840429,
+      "tag": "0004_harden_editorial_import_integrity",
+      "breakpoints": true
     }
   ]
 }
