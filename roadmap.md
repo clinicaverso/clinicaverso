@@ -37,6 +37,8 @@
 
 ## Fase 3 — Escala Editorial
 
+- [x] Retomar a especificação reenviada e verificar implementação, banco e testes existentes
+
 - [ ] Implementar formato XLSX oficial, modelo e validação sem gravações
 - [ ] Implementar prévia, decisões de duplicatas e confirmação explícita
 - [ ] Implementar importação autorizada, atômica por linha, idempotente e retomável

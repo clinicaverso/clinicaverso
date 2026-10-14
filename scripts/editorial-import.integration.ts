@@ -43,7 +43,7 @@ try{
  const known=await prepare([{...base,codigo:first.code}],'create');assert('Modo criação não atualiza código existente',known[0]?.operation==='skip');
  const current=fail(await db.from('flashcards').select('*').eq('id',first.id).single());const roundtrip=await prepare([{...revised,comentario:JSON.stringify(current.comment)}],'update');assert('Exportação/reimportação preserva conteúdo sem alteração',roundtrip[0]?.operation==='skip');
  const twoHundred=await prepare(Array.from({length:200},(_,i)=>sample(i+200)));const volume=await finish(await confirm(twoHundred));createdIds.push(...volume.map((r:any)=>r.flashcard_id).filter(Boolean));assert('Volume real de 200 cards no banco',volume.filter((r:any)=>r.status==='created').length===200);
- const collision=await prepare([sample(900)]);collision[0].cells.resposta='';const atomic=await finish(await confirm(collision));assert('Falha do executor é isolada e não cria card parcial',atomic[0].status==='error'&&!atomic[0].flashcard_id);
+ const collision=await prepare([sample(900)]);collision[0].expected='2000-01-01T00:00:00Z';collision[0].operation='update';collision[0].cells.codigo=first.code;const atomic=await finish(await confirm(collision,'update'));assert('Falha do executor é isolada e não cria card parcial',atomic[0].status==='error'&&!atomic[0].flashcard_id);
  writeFileSync('/tmp/browser/phase3/integration-results.json',JSON.stringify({stamp,results,createdIds},null,2));
  console.log(JSON.stringify({passed:results.filter(r=>r.passed).length,total:results.length,created:createdIds.length,results},null,2));
 }finally{
