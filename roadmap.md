@@ -39,11 +39,11 @@
 
 - [x] Retomar a especificação reenviada e verificar implementação, banco e testes existentes
 
-- [ ] Implementar formato XLSX oficial, modelo e validação sem gravações
-- [ ] Implementar prévia, decisões de duplicatas e confirmação explícita
-- [ ] Implementar importação autorizada, atômica por linha, idempotente e retomável
-- [ ] Implementar histórico, relatórios e exportação filtrada
-- [ ] Inventariar dados temporários e arquivar/desativar somente os comprovados
-- [ ] Corrigir compensação de mídia e consistência de duplicação
-- [ ] Homologar cenários solicitados e informar volume realmente testado
-- [ ] Entregar relatório técnico da Fase 3 sem iniciar Fase 4
+- [x] Implementar formato XLSX oficial, modelo e validação sem gravações
+- [x] Implementar prévia, decisões de duplicatas e confirmação explícita
+- [x] Implementar importação autorizada, atômica por linha, idempotente e retomável
+- [x] Implementar histórico, relatórios e exportação filtrada
+- [x] Inventariar dados temporários e arquivar/desativar somente os comprovados
+- [x] Corrigir compensação de mídia e consistência de duplicação
+- [x] Homologar cenários solicitados e informar volume realmente testado
+- [x] Entregar relatório técnico da Fase 3 sem iniciar Fase 4
