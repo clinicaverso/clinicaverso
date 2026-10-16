@@ -1,5 +1,11 @@
 # Roadmap
 
+## Fase 4 — Estudo do aluno
+- [ ] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
+- [ ] Implementar sessões persistentes e revalidação de acesso
+- [ ] Conectar temas, estudo e Dashboard preservando identidade
+- [ ] Homologar regras, fluxos reais e entregar relatório; não iniciar Fase 5
+
 - [x] Refinar sidebar e estrutura global responsiva
 - [x] Reorganizar e polir o dashboard
 - [x] Compactar produtos e métricas
