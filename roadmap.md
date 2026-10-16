@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Fase 4 — Estudo do aluno
+- [ ] Revisar e apresentar migração aditiva: estado inicial, lapse_count, autorização por seção, compatibilidade e ausência de sessões vazias
 - [ ] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
 - [ ] Implementar sessões persistentes e revalidação de acesso
 - [ ] Conectar temas, estudo e Dashboard preservando identidade
