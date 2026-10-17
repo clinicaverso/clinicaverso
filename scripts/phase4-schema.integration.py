@@ -51,7 +51,9 @@ try:
  rejected('Tema futuro não cria sessão',f"SELECT start_study_session('{sec}','{future}')")
  ok('Falha não deixa sessão vazia',scalar('SELECT count(*) FROM study_sessions')==before)
  sid=val(f"SELECT start_study_session('{sec}','{topic}')")
- ok('Criação repetida retoma mesma sessão',sid==val(f"SELECT start_study_session('{sec}','{topic}')"))
+ with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+  resumed=list(pool.map(lambda _:val(f"SELECT start_study_session('{sec}','{topic}')"),range(4)))
+ ok('Criações concorrentes retomam uma única sessão',all(x==sid for x in resumed) and scalar('SELECT count(*) FROM study_sessions')=='1')
  data=json.loads(val(f"SELECT read_study_session('{sid}')"));op=data['item_id'];c=data['card']['id']
  ok('Exibição não conclui card nem cria estado',data['done']==0 and scalar('SELECT count(*) FROM user_flashcard_states')=='0')
  rejected('Avaliar sem revelar falha',f"SELECT rate_study_item('{sid}','{op}','again')")
@@ -93,6 +95,18 @@ try:
  ok('Histórico append-only bloqueia exclusão privilegiada',raw('DELETE FROM learning_events',False).returncode!=0)
  # No unintended permissions on helpers.
  rejected('Helper privado indisponível diretamente',f"SELECT private.study_eligible('{c}','{sec}')")
+ # Force a state-write failure after event insertion; whole evaluation must roll back.
+ actor=v
+ next_data=json.loads(val(f"SELECT read_study_session('{sv}',true)"));next_op=next_data['item_id']
+ raw("CREATE FUNCTION private.test_reject_state() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'forced integration failure'; END $$; CREATE TRIGGER test_reject_state BEFORE INSERT ON user_flashcard_states FOR EACH ROW EXECUTE FUNCTION private.test_reject_state();")
+ prior=scalar('SELECT count(*) FROM learning_events')
+ rejected('Falha no estado reverte avaliação inteira',f"SELECT rate_study_item('{sv}','{next_op}','again')")
+ ok('Rollback não conclui item nem deixa evento parcial',scalar('SELECT count(*) FROM learning_events')==prior and scalar(f"SELECT event_id IS NULL FROM study_session_items WHERE id='{next_op}'")=='t')
+ raw('DROP TRIGGER test_reject_state ON user_flashcard_states')
+ raw(f"UPDATE weekly_schedules SET status='archived' WHERE id='{sched}'")
+ rejected('Sessão antiga não permite avaliar tema sem autorização atual',f"SELECT rate_study_item('{sv}','{next_op}','good')")
+ ok('Retomada sem elegibilidade não expõe conteúdo',json.loads(val(f"SELECT read_study_session('{sv}')"))['card'] is None)
+ ok('Colunas históricas obrigatórias de revisão permanecem intactas',scalar("SELECT count(*) FROM information_schema.columns WHERE table_name='review_events' AND column_name IN ('scheduled_next_review','new_interval','previous_interval') AND is_nullable='NO'")=='3')
  print(json.dumps({'environment':'isolated PostgreSQL fixture, not live application','passed':len(results),'results':results},ensure_ascii=False,indent=2))
 finally:
  Path('/tmp/phase4-postgres/results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2))
