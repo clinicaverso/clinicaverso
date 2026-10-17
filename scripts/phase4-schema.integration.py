@@ -4,13 +4,13 @@ Run: python3 scripts/phase4-schema.integration.py (local cluster socket required
 import subprocess,json,uuid,concurrent.futures
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
-BASE=['psql','-h','/tmp/phase4-postgres/socket','-p','55439','-U','lovable','-d','phase4_test','-X','-q','-A','-t','-v','ON_ERROR_STOP=1']
+DB='phase4_test_'+uuid.uuid4().hex
+BASE=['psql','-h','/tmp/phase4-postgres/socket','-p','55439','-U','lovable','-d',DB,'-X','-q','-A','-t','-v','ON_ERROR_STOP=1']
 def raw(sql,check=True):
  r=subprocess.run(BASE+['-c',sql],capture_output=True,text=True)
  if check and r.returncode:raise RuntimeError(r.stderr)
  return r
-subprocess.run(BASE[:-10],capture_output=True) if False else None
-subprocess.run(['psql','-h','/tmp/phase4-postgres/socket','-p','55439','-U','lovable','-d','postgres','-c','CREATE DATABASE phase4_test'],capture_output=True,check=True)
+subprocess.run(['psql','-h','/tmp/phase4-postgres/socket','-p','55439','-U','lovable','-d','postgres','-c','CREATE DATABASE '+DB],capture_output=True,check=True)
 raw((ROOT/'scripts/fixtures/phase4-base.sql').read_text())
 raw((ROOT/'docs/phase4/proposed-migration.sql').read_text())
 uid=lambda:str(uuid.uuid4())

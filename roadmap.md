@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Fase 4 — Estudo do aluno
-- [ ] Revisar e apresentar migração aditiva: estado inicial, lapse_count, autorização por seção, compatibilidade e ausência de sessões vazias
+- [x] Revisar migração aditiva e testar funções em PostgreSQL isolado; apresentar proposta para aprovação antes de aplicar
+- [ ] Aplicar proposta revisada após aprovação da separação learning_events/review_events
 - [ ] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
 - [ ] Implementar sessões persistentes e revalidação de acesso
 - [ ] Conectar temas, estudo e Dashboard preservando identidade
