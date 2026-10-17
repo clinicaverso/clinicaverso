@@ -37,6 +37,11 @@ CREATE POLICY learning_events_owner ON public.learning_events FOR SELECT TO auth
  USING(user_id=auth.uid() OR private.has_role(auth.uid(),'admin'));
 CREATE INDEX learning_events_owner_card ON public.learning_events(user_id,flashcard_id,reviewed_at DESC);
 COMMENT ON TABLE public.learning_events IS 'Append-only real learning without artificial scheduling. Preserved alongside review_events for future FSRS initialization; never converted by rewriting history.';
+CREATE FUNCTION private.guard_learning_event_history() RETURNS trigger
+ LANGUAGE plpgsql SET search_path='' AS $$
+BEGIN RAISE EXCEPTION 'Eventos de aprendizagem são imutáveis'; END $$;
+CREATE TRIGGER learning_event_history_guard BEFORE UPDATE OR DELETE ON public.learning_events
+ FOR EACH ROW EXECUTE FUNCTION private.guard_learning_event_history();
 
 CREATE TABLE public.study_session_items (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), session_id uuid NOT NULL REFERENCES public.study_sessions(id),
@@ -155,7 +160,7 @@ BEGIN
  PERFORM pg_advisory_xact_lock(hashtextextended(s.user_id::text||i.flashcard_id::text,0));
  SELECT * INTO st FROM public.user_flashcard_states WHERE user_id=s.user_id AND flashcard_id=i.flashcard_id FOR UPDATE;
  before_state:=CASE WHEN FOUND THEN st.learning_state ELSE 'new'::public.learning_state END;
- IF coalesce(st.review_count,0)>0 OR st.next_review_at IS NOT NULL OR st.fsrs_stability IS NOT NULL OR st.fsrs_difficulty IS NOT NULL OR coalesce(st.fsrs_data,'{}'::jsonb)<>'{}'::jsonb THEN RAISE EXCEPTION 'Card já estudado ou agendado'; END IF;
+ IF coalesce(st.review_count,0)>0 OR coalesce(st.current_interval,0)<>0 OR st.next_review_at IS NOT NULL OR st.fsrs_stability IS NOT NULL OR st.fsrs_difficulty IS NOT NULL OR coalesce(st.fsrs_data,'{}'::jsonb)<>'{}'::jsonb THEN RAISE EXCEPTION 'Card já estudado ou agendado'; END IF;
  INSERT INTO public.learning_events(user_id,flashcard_id,session_id,operation_id,rating,card_version_seen,learning_state_before)
  VALUES(s.user_id,i.flashcard_id,s.id,i.id,p_rating,i.version_seen,before_state) RETURNING id INTO eid;
  INSERT INTO public.user_flashcard_states(user_id,flashcard_id,learning_state,first_seen_at,last_reviewed_at,review_count,lapse_count,scheduling_status)
