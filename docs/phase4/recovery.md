@@ -1,0 +1,8 @@
+# Phase 4 recovery procedure
+
+- Preflight: inspect live columns, composite version FKs, triggers, grants, RLS and repository write consumers. Confirm new object names do not exist before applying.
+- Apply the approved additive SQL using the migration tool's transaction. A failed migration rolls back schema and migration journal; fix the reported error and retry through the same tool, not manual SQL.
+- Existing review history, versions, media and counters are never deleted or rewritten. The new scheduling classification leaves legacy rows NULL.
+- After a successful migration, retain the additive schema if application validation fails; disable the faulty UI/action and repair forward in a new migration. Never roll back by dropping tables containing learning history.
+- The old direct state-write grants are intentionally revoked; no repository consumer currently writes these states. Future writers must use authenticated transactional operations.
+- Phase 4 follows current authenticated/active-section access. Subscription entitlements must be implemented and audited before commercialization; this release does not enforce subscription ownership and adds no payments.
