@@ -36,6 +36,13 @@
       "when": 1791938840429,
       "tag": "0004_harden_editorial_import_integrity",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792383037162,
+      "tag": "0005_student_atomic_unscheduled_learning",
+      "breakpoints": true
     }
   ]
 }

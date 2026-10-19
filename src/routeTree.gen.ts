@@ -18,6 +18,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
+import { Route as AuthenticatedStudySessionRouteImport } from './routes/_authenticated/study.$session'
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as AuthenticatedAdminAdminAreasRouteImport } from './routes/_authenticated/_admin/admin.areas'
 import { Route as AuthenticatedAdminAdminFlashcardsRouteImport } from './routes/_authenticated/_admin/admin.flashcards'
@@ -79,6 +80,12 @@ const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedStudySessionRoute =
+  AuthenticatedStudySessionRouteImport.update({
+    id: '/study/$session',
+    path: '/study/$session',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminAdminIndexRoute =
   AuthenticatedAdminAdminIndexRouteImport.update({
     id: '/',
@@ -184,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/study/$session': typeof AuthenticatedStudySessionRoute
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   '/admin/import': typeof AuthenticatedAdminAdminImportRoute
@@ -208,6 +216,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/study/$session': typeof AuthenticatedStudySessionRoute
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/import': typeof AuthenticatedAdminAdminImportRoute
   '/admin/media': typeof AuthenticatedAdminAdminMediaRoute
@@ -235,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/performance': typeof AuthenticatedPerformanceRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/_authenticated/study/$session': typeof AuthenticatedStudySessionRoute
   '/_authenticated/_admin/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/_authenticated/_admin/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
   '/_authenticated/_admin/admin/import': typeof AuthenticatedAdminAdminImportRoute
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/profile'
     | '/admin'
+    | '/study/$session'
     | '/admin/areas'
     | '/admin/flashcards'
     | '/admin/import'
@@ -286,6 +297,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/performance'
     | '/profile'
+    | '/study/$session'
     | '/admin/areas'
     | '/admin/import'
     | '/admin/media'
@@ -312,6 +324,7 @@ export interface FileRouteTypes {
     | '/_authenticated/performance'
     | '/_authenticated/profile'
     | '/_authenticated/_admin/admin'
+    | '/_authenticated/study/$session'
     | '/_authenticated/_admin/admin/areas'
     | '/_authenticated/_admin/admin/flashcards'
     | '/_authenticated/_admin/admin/import'
@@ -400,6 +413,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminAdminRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/study/$session': {
+      id: '/_authenticated/study/$session'
+      path: '/study/$session'
+      fullPath: '/study/$session'
+      preLoaderRoute: typeof AuthenticatedStudySessionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/_admin/admin/': {
       id: '/_authenticated/_admin/admin/'
@@ -598,6 +618,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedStudySessionRoute: typeof AuthenticatedStudySessionRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -606,6 +627,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPerformanceRoute: AuthenticatedPerformanceRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedStudySessionRoute: AuthenticatedStudySessionRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

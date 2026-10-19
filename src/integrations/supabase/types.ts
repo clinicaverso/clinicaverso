@@ -484,6 +484,70 @@ export type Database = {
           },
         ]
       }
+      learning_events: {
+        Row: {
+          card_version_seen: number
+          event_kind: string
+          flashcard_id: string
+          id: string
+          learning_state_after: Database["public"]["Enums"]["learning_state"]
+          learning_state_before: Database["public"]["Enums"]["learning_state"]
+          operation_id: string
+          rating: Database["public"]["Enums"]["review_rating"]
+          reviewed_at: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          card_version_seen: number
+          event_kind?: string
+          flashcard_id: string
+          id?: string
+          learning_state_after?: Database["public"]["Enums"]["learning_state"]
+          learning_state_before: Database["public"]["Enums"]["learning_state"]
+          operation_id: string
+          rating: Database["public"]["Enums"]["review_rating"]
+          reviewed_at?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          card_version_seen?: number
+          event_kind?: string
+          flashcard_id?: string
+          id?: string
+          learning_state_after?: Database["public"]["Enums"]["learning_state"]
+          learning_state_before?: Database["public"]["Enums"]["learning_state"]
+          operation_id?: string
+          rating?: Database["public"]["Enums"]["review_rating"]
+          reviewed_at?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_events_flashcard_id_card_version_seen_fkey"
+            columns: ["flashcard_id", "card_version_seen"]
+            isOneToOne: false
+            referencedRelation: "flashcard_versions"
+            referencedColumns: ["flashcard_id", "version"]
+          },
+          {
+            foreignKeyName: "learning_events_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "learning_events_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "study_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -606,6 +670,110 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      study_session_items: {
+        Row: {
+          event_id: string | null
+          flashcard_id: string
+          id: string
+          position: number
+          revealed: boolean
+          session_id: string
+          skipped: boolean
+          version_seen: number | null
+        }
+        Insert: {
+          event_id?: string | null
+          flashcard_id: string
+          id?: string
+          position: number
+          revealed?: boolean
+          session_id: string
+          skipped?: boolean
+          version_seen?: number | null
+        }
+        Update: {
+          event_id?: string | null
+          flashcard_id?: string
+          id?: string
+          position?: number
+          revealed?: boolean
+          session_id?: string
+          skipped?: boolean
+          version_seen?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_session_items_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "learning_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_session_items_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_session_items_flashcard_id_version_seen_fkey"
+            columns: ["flashcard_id", "version_seen"]
+            isOneToOne: false
+            referencedRelation: "flashcard_versions"
+            referencedColumns: ["flashcard_id", "version"]
+          },
+          {
+            foreignKeyName: "study_session_items_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "study_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          section_id: string
+          topic_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          section_id: string
+          topic_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          section_id?: string
+          topic_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_sessions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subtopics: {
         Row: {
@@ -730,6 +898,7 @@ export type Database = {
           learning_state: Database["public"]["Enums"]["learning_state"]
           next_review_at: string | null
           review_count: number
+          scheduling_status: string | null
           updated_at: string
           user_id: string
         }
@@ -746,6 +915,7 @@ export type Database = {
           learning_state?: Database["public"]["Enums"]["learning_state"]
           next_review_at?: string | null
           review_count?: number
+          scheduling_status?: string | null
           updated_at?: string
           user_id: string
         }
@@ -762,6 +932,7 @@ export type Database = {
           learning_state?: Database["public"]["Enums"]["learning_state"]
           next_review_at?: string | null
           review_count?: number
+          scheduling_status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -935,6 +1106,23 @@ export type Database = {
         Args: { p_import_id: string; p_limit?: number }
         Returns: Json
       }
+      rate_study_item: {
+        Args: {
+          p_operation: string
+          p_rating: Database["public"]["Enums"]["review_rating"]
+          p_session: string
+        }
+        Returns: string
+      }
+      read_study_session: {
+        Args: { p_reveal?: boolean; p_session: string }
+        Returns: Json
+      }
+      start_study_session: {
+        Args: { p_section: string; p_topic: string }
+        Returns: string
+      }
+      study_catalog: { Args: { p_section: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "student" | "editor"
