@@ -59,7 +59,11 @@ try:
  ok('Archive during session prevents rating',not rpc(student,'rate_study_item',{'p_session':sid,'p_operation':d['item_id'],'p_rating':'good'}).ok)
  nextd=session();ok('Resume excludes archived card',nextd['excluded']>=1 and (nextd['card'] is None or nextd['card']['id']!=archived))
  ok('Direct counter writes denied',not request(student,'PATCH','/rest/v1/user_flashcard_states?flashcard_id=eq.'+card['id'],{'review_count':99}).ok)
- ok('Learning event updates denied',not request(student,'PATCH','/rest/v1/learning_events?operation_id=eq.'+op,{'rating':'easy'}).ok)
+ request(student,'PATCH','/rest/v1/learning_events?operation_id=eq.'+op,{'rating':'easy'})
+ ok('Learning event cannot be changed by student',read(student,'learning_events','operation_id=eq.'+op+'&select=rating')[0]['rating']=='again')
+ request(student,'DELETE','/rest/v1/learning_events?operation_id=eq.'+op)
+ ok('Learning event cannot be deleted by student',len(read(student,'learning_events','operation_id=eq.'+op+'&select=id'))==1)
+ ok('Unknown topic fails without empty session',not rpc(student,'start_study_session',{'p_section':sec,'p_topic':str(uuid.uuid4())}).ok)
  ok('Review event history unchanged',len(read(student,'review_events','select=id'))==review_before)
 except Exception as e:
  print('Stopped:',str(e)[:300]);raise
