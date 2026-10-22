@@ -45,7 +45,7 @@ try:
  ok('Historic media preserved in pinned version',any(m['storage_path']==path for m in d['card']['media']))
  signed=rpc(student,'read_study_session',{'p_session':sid})
  sign=request(student,'POST','/storage/v1/object/sign/flashcard-media/'+path,{'expiresIn':120});ok('Historical media signing authorized for pending session',sign.ok)
- ok('Other account cannot sign historic student media',not request(editor,'GET','/rest/v1/study_sessions?id=eq.'+sid).json())
+ ok('Editor cannot read another account study-session row',not request(editor,'GET','/rest/v1/study_sessions?id=eq.'+sid).json())
  def rate():return rpc(student,'rate_study_item',{'p_session':sid,'p_operation':op,'p_rating':'again'})
  with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:responses=list(pool.map(lambda _:rate(),range(8)))
  ok('Eight duplicate requests return one event',all(r.ok for r in responses) and len({data(r) for r in responses})==1)

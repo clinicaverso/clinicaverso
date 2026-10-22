@@ -2,12 +2,15 @@
 
 ## Fase 4 — Estudo do aluno
 - [x] Revisar migração aditiva e testar funções em PostgreSQL isolado; apresentar proposta para aprovação antes de aplicar
-- [ ] Aplicar proposta revisada após aprovação da separação learning_events/review_events
-- [ ] Conferir dependências reais e recuperação transacional; documentar controle por assinatura obrigatório antes da comercialização
-- [ ] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
-- [ ] Implementar sessões persistentes e revalidação de acesso
-- [ ] Conectar temas, estudo e Dashboard preservando identidade
-- [ ] Homologar regras, fluxos reais e entregar relatório; não iniciar Fase 5
+- [x] Aplicar proposta revisada após aprovação da separação learning_events/review_events
+- [x] Conferir dependências reais e recuperação transacional; documentar controle por assinatura obrigatório antes da comercialização
+- [x] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
+- [x] Implementar sessões persistentes e revalidação de acesso
+- [x] Conectar temas, estudo e Dashboard preservando identidade
+- [ ] Completar homologação: concorrência entre seções, falha transacional real, mídia após perda de elegibilidade e regressão Admin/login
+- [ ] Exibir temas futuros bloqueados com data; confirmar contrato de catálogo sem expor conteúdo
+- [ ] Conferir privilégios efetivos de learning_events (RLS impede alterações, mas grants efetivos são mais amplos que o SQL solicitado)
+- [ ] Entregar relatório final após todas as verificações; não iniciar Fase 5
 
 - [x] Refinar sidebar e estrutura global responsiva
 - [x] Reorganizar e polir o dashboard
