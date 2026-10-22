@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Fase 4 — Estudo do aluno
+- [ ] Atender especificação de finalização: privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
 - [x] Revisar migração aditiva e testar funções em PostgreSQL isolado; apresentar proposta para aprovação antes de aplicar
 - [x] Aplicar proposta revisada após aprovação da separação learning_events/review_events
 - [x] Conferir dependências reais e recuperação transacional; documentar controle por assinatura obrigatório antes da comercialização
