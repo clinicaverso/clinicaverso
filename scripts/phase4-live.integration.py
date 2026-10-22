@@ -45,7 +45,7 @@ try:
  ok('Historic media preserved in pinned version',any(m['storage_path']==path for m in d['card']['media']))
  signed=rpc(student,'read_study_session',{'p_session':sid})
  sign=request(student,'POST','/storage/v1/object/sign/flashcard-media/'+path,{'expiresIn':120});ok('Historical media signing authorized for pending session',sign.ok)
- ok('Other account cannot sign historic student media',not request(editor,'GET','/rest/v1/study_sessions?id=eq.'+sid).json())
+ ok('Editor cannot read another account study-session row',not request(editor,'GET','/rest/v1/study_sessions?id=eq.'+sid).json())
  def rate():return rpc(student,'rate_study_item',{'p_session':sid,'p_operation':op,'p_rating':'again'})
  with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:responses=list(pool.map(lambda _:rate(),range(8)))
  ok('Eight duplicate requests return one event',all(r.ok for r in responses) and len({data(r) for r in responses})==1)
@@ -59,7 +59,11 @@ try:
  ok('Archive during session prevents rating',not rpc(student,'rate_study_item',{'p_session':sid,'p_operation':d['item_id'],'p_rating':'good'}).ok)
  nextd=session();ok('Resume excludes archived card',nextd['excluded']>=1 and (nextd['card'] is None or nextd['card']['id']!=archived))
  ok('Direct counter writes denied',not request(student,'PATCH','/rest/v1/user_flashcard_states?flashcard_id=eq.'+card['id'],{'review_count':99}).ok)
- ok('Learning event updates denied',not request(student,'PATCH','/rest/v1/learning_events?operation_id=eq.'+op,{'rating':'easy'}).ok)
+ request(student,'PATCH','/rest/v1/learning_events?operation_id=eq.'+op,{'rating':'easy'})
+ ok('Learning event cannot be changed by student',read(student,'learning_events','operation_id=eq.'+op+'&select=rating')[0]['rating']=='again')
+ request(student,'DELETE','/rest/v1/learning_events?operation_id=eq.'+op)
+ ok('Learning event cannot be deleted by student',len(read(student,'learning_events','operation_id=eq.'+op+'&select=id'))==1)
+ ok('Unknown topic fails without empty session',not rpc(student,'start_study_session',{'p_section':sec,'p_topic':str(uuid.uuid4())}).ok)
  ok('Review event history unchanged',len(read(student,'review_events','select=id'))==review_before)
 except Exception as e:
  print('Stopped:',str(e)[:300]);raise
