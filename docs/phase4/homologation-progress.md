@@ -1,6 +1,6 @@
 # ClinicaVerso — Fase 4: relatório parcial de implementação e homologação
 
-**Estado: implementada parcialmente e em homologação. Não declarar a Fase 4 concluída.**
+**Relatório parcial histórico, substituído por `homologation-final.md` em 23/10/2026. As pendências abaixo descrevem a rodada anterior, não o estado atual.**
 
 ## Alterações efetivamente realizadas
 
