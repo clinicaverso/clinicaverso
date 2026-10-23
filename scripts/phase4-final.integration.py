@@ -56,7 +56,7 @@ def schedule(section,start,ts):
  patch(admin,'weekly_schedules',s['id'],{'status':'published'});return s['id']
 if not resume:
  schedule(other['id'],'2020-01-06',[topic['id']]+[t['id'] for t in topics if t['id']!=topic['id']][:2])
- future_date=m.setdefault('future_date','2090-%02d-%02d'%(int(marker[-4:-2],16)%12+1,int(marker[-2:],16)%28+1));save()
+ hx=uuid.uuid4().hex;future_date=m.setdefault('future_date','2090-%02d-%02d'%(int(hx[:2],16)%12+1,int(hx[2:4],16)%28+1));save()
  schedule(sec,future_date,future)
 otherstudent,otheruid=load(ROOT/'other-session.json');m['other_student']=otheruid;save()
 ok('Second ordinary test student session valid, without changing principal admin',all(r['role']=='student' for r in read(otherstudent,'user_roles','user_id=eq.'+otheruid+'&select=role')))
