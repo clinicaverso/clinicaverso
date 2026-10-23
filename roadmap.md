@@ -1,5 +1,8 @@
 # Roadmap
 
+## Fase 5 — Somente planejamento
+- [ ] Apresentar plano técnico de FSRS, fila diária, compatibilidade, segurança e homologação; aguardar aprovação antes de implementar
+
 ## Fase 4 — Estudo do aluno
 - [x] Testar privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
 - [x] Revisar migração aditiva e testar funções em PostgreSQL isolado; apresentar proposta para aprovação antes de aplicar
