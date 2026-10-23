@@ -17,7 +17,7 @@ def make(key,token=None):
 def load(path):
  j=json.loads(Path(path).read_text());return make(KEY,j['session']['access_token']),j['session']['user']['id']
 editor,eid=load('/tmp/browser/phase4/editor-session.json')
-student,uid=load('/root/.cache/lovable-auth/session.json')
+student,uid=load('/tmp/browser/phase4-final/student-session.json')
 assert eid=='f008a3eb-0bc0-4725-9f80-80d9495b9db9' and uid=='232701a6-e67f-408f-aa42-9118425773fd'
 admin=make(os.environ['SUPABASE_SERVICE_ROLE_KEY'])
 def req(c,method,path,row=None):return c.request(method,URL+path,json=row,timeout=30)
@@ -36,8 +36,8 @@ if '--cleanup' in sys.argv:
  patch(admin,'sections',m['section'],{'is_active':False})
  print('Only identified synthetic content archived; all learning/version history preserved.')
  sys.exit()
-marker='[Homologação final F4 '+uuid.uuid4().hex[:8]+']';results=[]
-m={'marker':marker,'cards':[],'schedules':[],'topics':[]}
+resume=(ROOT/'manifest.json').exists();m=json.loads((ROOT/'manifest.json').read_text()) if resume else {'marker':'[Homologação final F4 '+uuid.uuid4().hex[:8]+']','cards':[],'schedules':[],'topics':[]}
+marker=m['marker'];results=[]
 def save():(ROOT/'manifest.json').write_text(json.dumps(m,indent=2))
 def ok(name,condition):
  results.append({'name':name,'passed':bool(condition)});(ROOT/'results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2))
@@ -46,21 +46,19 @@ def ok(name,condition):
 sec=read(editor,'sections','slug=eq.r1cm&select=id')[0]['id']
 topics=read(editor,'topics','is_active=eq.true&select=id,name,area_id')
 topic=next(t for t in topics if t['name']=='Síndrome Coronariana Aguda');area=topic['area_id']
-other=insert(admin,'sections',{'name':marker,'slug':'f4-'+uuid.uuid4().hex[:8],'is_active':True});m['section']=other['id'];save()
-future=[]
-for i in range(3):
+other={'id':m['section']} if resume else insert(admin,'sections',{'name':marker,'slug':'f4-'+uuid.uuid4().hex[:8],'is_active':True});m['section']=other['id'];save()
+future=m['topics'].copy()
+for i in range(0 if resume else 3):
  t=insert(editor,'topics',{'area_id':area,'name':marker+' tema futuro '+str(i),'slug':'f4-'+uuid.uuid4().hex});future.append(t['id']);m['topics'].append(t['id']);save()
 def schedule(section,start,ts):
  s=insert(admin,'weekly_schedules',{'section_id':section,'week_start_date':start,'created_by':eid,'status':'draft'});m['schedules'].append(s['id']);save()
  for day,t in zip([1,3,5],ts):insert(admin,'weekly_schedule_items',{'weekly_schedule_id':s['id'],'topic_id':t,'release_day':day,'release_order':day})
  patch(admin,'weekly_schedules',s['id'],{'status':'published'});return s['id']
-schedule(other['id'],'2020-01-06',[topic['id']]+[t['id'] for t in topics if t['id']!=topic['id']][:2])
-schedule(sec,'2090-01-02',future)
-password=secrets.token_urlsafe(24);email='f4-final-'+uuid.uuid4().hex[:12]+'@clinicaverso.test'
-user=value(req(admin,'POST','/auth/v1/admin/users',{'email':email,'password':password,'email_confirm':True}));otheruid=user['id']
-login=value(req(make(KEY),'POST','/auth/v1/token?grant_type=password',{'email':email,'password':password}));otherstudent=make(KEY,login['access_token'])
-credentials=ROOT/'login.json';credentials.write_text(json.dumps({'email':email,'password':password,'session':login}));credentials.chmod(0o600);m['other_student']=otheruid;save()
-ok('Second ordinary test student authenticates, without changing principal admin',len(read(otherstudent,'user_roles','user_id=eq.'+otheruid+'&select=role'))==0 or all(r['role']=='student' for r in read(otherstudent,'user_roles','user_id=eq.'+otheruid+'&select=role')))
+if not resume:
+ schedule(other['id'],'2020-01-06',[topic['id']]+[t['id'] for t in topics if t['id']!=topic['id']][:2])
+ schedule(sec,'2090-01-02',future)
+otherstudent,otheruid=load(ROOT/'other-session.json');m['other_student']=otheruid;save()
+ok('Second ordinary test student session valid, without changing principal admin',all(r['role']=='student' for r in read(otherstudent,'user_roles','user_id=eq.'+otheruid+'&select=role')))
 comment={'type':'doc','content':[{'type':'paragraph','content':[{'type':'text','text':('Comentário clínico sintético longo para homologação. '*80)+'URLsemquebra'*40}]},{'type':'table','content':[{'type':'tableRow','content':[{'type':'tableHeader','content':[{'type':'paragraph','content':[{'type':'text','text':label}]}]} for label in ['Achado','Interpretação','Conduta']]},{'type':'tableRow','content':[{'type':'tableCell','content':[{'type':'paragraph','content':[{'type':'text','text':'Texto amplo de verificação '+('semquebra'*25)}]}]} for _ in range(3)]}]}]}
 for i in range(4):
  c=insert(editor,'flashcards',{'topic_id':topic['id'],'question':marker+' pergunta '+str(i),'short_answer':'Resposta sintética de homologação','comment':comment,'status':'published','created_by':eid,'updated_by':eid});m['cards'].append(c['id']);save()
