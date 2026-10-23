@@ -43,6 +43,13 @@
       "when": 1792383037162,
       "tag": "0005_student_atomic_unscheduled_learning",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792713490541,
+      "tag": "0006_phase4_least_privilege_future_catalog",
+      "breakpoints": true
     }
   ]
 }

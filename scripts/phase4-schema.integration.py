@@ -13,6 +13,7 @@ def raw(sql,check=True):
 subprocess.run(['psql','-h','/tmp/phase4-postgres/socket','-p','55439','-U','lovable','-d','postgres','-c','CREATE DATABASE '+DB],capture_output=True,check=True)
 raw((ROOT/'scripts/fixtures/phase4-base.sql').read_text())
 raw((ROOT/'docs/phase4/proposed-migration.sql').read_text())
+raw((ROOT/'docs/phase4/hardening.sql').read_text())
 uid=lambda:str(uuid.uuid4())
 u,v,sec,sec2,inactive,area,topic,future,sched,sched2=[uid() for _ in range(10)]
 actor=u
@@ -46,7 +47,7 @@ try:
  rejected('Catálogo sem autenticação bloqueado',f"SELECT study_catalog('{sec}')",'')
  rejected('Seção inativa bloqueada',f"SELECT study_catalog('{inactive}')")
  cat=json.loads(val(f"SELECT study_catalog('{sec}')"))
- ok('Catálogo omite tema futuro e cards arquivados',len(cat)==1 and cat[0]['total']==6)
+ ok('Catálogo mostra metadados futuros sem conteúdo ou contadores',len(cat)==2 and next(t for t in cat if t['id']==topic)['total']==6 and next(t for t in cat if t['id']==future)['locked'] and next(t for t in cat if t['id']==future)['total']==0)
  before=scalar('SELECT count(*) FROM study_sessions')
  rejected('Tema futuro não cria sessão',f"SELECT start_study_session('{sec}','{future}')")
  ok('Falha não deixa sessão vazia',scalar('SELECT count(*) FROM study_sessions')==before)
