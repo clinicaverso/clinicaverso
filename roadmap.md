@@ -1,17 +1,18 @@
 # Roadmap
 
 ## Fase 4 — Estudo do aluno
-- [ ] Atender especificação de finalização: privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
+- [x] Testar privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
 - [x] Revisar migração aditiva e testar funções em PostgreSQL isolado; apresentar proposta para aprovação antes de aplicar
 - [x] Aplicar proposta revisada após aprovação da separação learning_events/review_events
 - [x] Conferir dependências reais e recuperação transacional; documentar controle por assinatura obrigatório antes da comercialização
 - [x] Implementar aprendizagem sem agendamento artificial, avaliação atômica e idempotente
 - [x] Implementar sessões persistentes e revalidação de acesso
 - [x] Conectar temas, estudo e Dashboard preservando identidade
-- [ ] Completar homologação: concorrência entre seções, falha transacional real, mídia após perda de elegibilidade e regressão Admin/login
-- [ ] Exibir temas futuros bloqueados com data; confirmar contrato de catálogo sem expor conteúdo
-- [ ] Conferir privilégios efetivos de learning_events (RLS impede alterações, mas grants efetivos são mais amplos que o SQL solicitado)
-- [ ] Entregar relatório final após todas as verificações; não iniciar Fase 5
+- [x] Homologar concorrência entre seções, falha transacional real, mídia após perda de elegibilidade e regressão editorial
+- [ ] Homologar entrada bem-sucedida pelo formulário — bloqueada pelo provedor de e-mail/senha desativado; configuração não alterada
+- [x] Exibir temas futuros bloqueados com data; confirmar contrato de catálogo sem expor conteúdo
+- [x] Conferir e restringir privilégios efetivos das quatro tabelas de estudo
+- [x] Entregar relatório consolidado com ressalva de login; não iniciar Fase 5 nem declarar homologação integral
 
 - [x] Refinar sidebar e estrutura global responsiva
 - [x] Reorganizar e polir o dashboard
