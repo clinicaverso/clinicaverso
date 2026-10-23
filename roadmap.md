@@ -9,10 +9,10 @@
 - [x] Implementar sessões persistentes e revalidação de acesso
 - [x] Conectar temas, estudo e Dashboard preservando identidade
 - [x] Homologar concorrência entre seções, falha transacional real, mídia após perda de elegibilidade e regressão editorial
-- [ ] Homologar entrada bem-sucedida pelo formulário — bloqueada pelo provedor de e-mail/senha desativado; configuração não alterada
+- [x] Homologar entrada bem-sucedida pelo formulário — provedor de e-mail/senha reativado com autorização; login, estudo, retomada, logout e segundo login validados no navegador
 - [x] Exibir temas futuros bloqueados com data; confirmar contrato de catálogo sem expor conteúdo
 - [x] Conferir e restringir privilégios efetivos das quatro tabelas de estudo
-- [x] Entregar relatório consolidado com ressalva de login; não iniciar Fase 5 nem declarar homologação integral
+- [x] Entregar relatório consolidado e adendo de autenticação; Fase 4 formalmente concluída e homologada; Fase 5 não iniciada
 
 - [x] Refinar sidebar e estrutura global responsiva
 - [x] Reorganizar e polir o dashboard

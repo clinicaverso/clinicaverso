@@ -56,7 +56,8 @@ def schedule(section,start,ts):
  patch(admin,'weekly_schedules',s['id'],{'status':'published'});return s['id']
 if not resume:
  schedule(other['id'],'2020-01-06',[topic['id']]+[t['id'] for t in topics if t['id']!=topic['id']][:2])
- schedule(sec,'2090-01-02',future)
+ import datetime;hx=uuid.uuid4().hex;future_date=m.setdefault('future_date',str(datetime.date(2090,1,2)+datetime.timedelta(weeks=int(hx[:4],16)%400)));save()
+ schedule(sec,future_date,future)
 otherstudent,otheruid=load(ROOT/'other-session.json');m['other_student']=otheruid;save()
 ok('Second ordinary test student session valid, without changing principal admin',all(r['role']=='student' for r in read(otherstudent,'user_roles','user_id=eq.'+otheruid+'&select=role')))
 comment={'type':'doc','content':[{'type':'paragraph','content':[{'type':'text','text':('Comentário clínico sintético longo para homologação. '*80)+'URLsemquebra'*40}]},{'type':'table','content':[{'type':'tableRow','content':[{'type':'tableHeader','content':[{'type':'paragraph','content':[{'type':'text','text':label}]}]} for label in ['Achado','Interpretação','Conduta']]},{'type':'tableRow','content':[{'type':'tableCell','content':[{'type':'paragraph','content':[{'type':'text','text':'Texto amplo de verificação '+('semquebra'*25)}]}]} for _ in range(3)]}]}]}
