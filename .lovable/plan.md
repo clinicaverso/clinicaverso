@@ -1,7 +1,7 @@
 # Fase 5 — FSRS e fila diária inteligente
 
 ## Escopo e aprovação
-**Apenas plano técnico.** Sem migrações, dependências ou funcionalidades executadas; aguardar aprovação. Preservar identidade, autenticação, CMS e pergunta → resposta/comentário → avaliação. Sem pagamentos, assinaturas, IA, treinamento personalizado de parâmetros ou gamificação.
+**Plano somente; aguardar aprovação.** Sem código, migrações ou instalação de biblioteca. Preservar identidade/CMS/fluxo. Sem pagamentos, assinaturas, IA ou gamificação.
 
 Base: migrações, contratos, sessões e fechamento da Fase 4; banco real ainda exige auditoria. Testes abaixo são propostos.
 
@@ -23,7 +23,7 @@ Política conservadora proposta:
 3. Preservar totais históricos, separar `reps/lapses` FSRS; lapsos Fase 4 e motor seguem suas definições, sem corrigir passado.
 4. NULL/payload desconhecido/datas incoerentes: classificar, sem reset silencioso. Agenda reconhecida só continua após validação.
 
-Inicialização registra origem/configuração atuais e comita junto da avaliação real, sem evento histórico fictício.
+Inicialização comita com avaliação atual, sem histórico fictício.
 
 ## 3. Fila e organização pedagógica
 **Meta proposta: pelo menos 25 cards distintos avaliados por dia; nunca limite máximo.** Repetições necessárias contam como respostas, não novamente como cards da meta. Mostrar ambas as métricas.
@@ -38,7 +38,7 @@ Fuso **America/Fortaleza**; UTC `timestamptz`. Limites locais IANA, não 24h fix
 
 Escopo inicial R1CM, sem habilitar seções futuras. Elegibilidade por seção; estado/agenda globais `(user_id, flashcard_id)`.
 
-Novos por tema escolhido; revisões misturadas com desempate estável, preservando prioridade/vencimento. Atualizar fila entre avaliações, não a pergunta apresentada.
+Novos por tema; revisões misturadas, prioridade/vencimento preservados. Atualizar entre avaliações, não pergunta apresentada.
 
 Membro único por fila/card, deduplicação entre seções; tentativas distintas permitem passos reais repetidos. Fila persistente/incremental sem teto de meta; retomada reutiliza tentativa ativa, abandono não bloqueia permanentemente.
 
@@ -61,7 +61,7 @@ Proposta aditiva, sem SQL aplicado:
 
 JSON completo/versionado preserva passos/reps/lapses/precisão; colunas são projeções. `last_review` FSRS não substitui datas históricas.
 
-Índices: usuário/vencimento, fila/dia, tentativas pendentes; UNIQUE parcial usuário/operação e usuário/card/revisão anterior nos eventos FSRS. FKs para tentativa/configuração/versão, sem novas referências à autenticação gerenciada.
+Índices usuário/vencimento/fila/dia/tentativas; UNIQUE parcial usuário/operação e usuário/card/revisão. FKs tentativa/configuração/versão; sem FK nova à autenticação gerenciada.
 
 Migrações em etapas:
 1. Auditoria real de colunas, ACLs, owners, triggers, consumidores e estados legados; backup e plano de recuperação.
