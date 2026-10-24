@@ -3,7 +3,7 @@
 ## Escopo e aprovação
 **Plano somente; aguardar aprovação.** Sem código, migrações ou instalação de biblioteca. Preservar identidade/CMS/fluxo. Sem pagamentos, assinaturas, IA ou gamificação.
 
-Base: migrações, contratos, sessões e fechamento da Fase 4; banco real ainda exige auditoria. Testes abaixo são propostos.
+Base: repositório/Fase 4; banco real exige auditoria. Testes propostos.
 
 ## 1. Algoritmo
 - Fixar **ts-fsrs@5.4.2**, MIT, **FSRS-6.0**; versão estável verificada no registro em 23/10/2026. Sem beta ou atualização automática.
@@ -23,7 +23,7 @@ Política conservadora proposta:
 3. Preservar totais históricos, separar `reps/lapses` FSRS; lapsos Fase 4 e motor seguem suas definições, sem corrigir passado.
 4. NULL/payload desconhecido/datas incoerentes: classificar, sem reset silencioso. Agenda reconhecida só continua após validação.
 
-Inicialização comita com avaliação atual, sem histórico fictício.
+Inicialização junto da avaliação atual, sem passado fictício.
 
 ## 3. Fila e organização pedagógica
 **Meta proposta: pelo menos 25 cards distintos avaliados por dia; nunca limite máximo.** Repetições necessárias contam como respostas, não novamente como cards da meta. Mostrar ambas as métricas.
@@ -107,7 +107,7 @@ RPCs: resumo, fila, ler/revelar, preparar e commit restrito. Queries seção/mod
 Fixture PostgreSQL isolada ≠ integração real. Aceite: todos os obrigatórios passam, zero falhas críticas, limpeza por IDs registrados e relatório com versões/evidências/recuperação. Nunca homologar teste não executado.
 
 ## Decisões para aprovação e riscos
-Aprovar inicialização, meta distinta, fuso, prioridade e parâmetros. Riscos: runtime, ACLs legadas, precisão, backlog e concorrência; testes bloqueiam liberação. Assinaturas antes da comercialização, fora da fase.
+Aprovar inicialização/meta/fuso/prioridade/parâmetros. Riscos: runtime/ACLs/precisão/backlog/corridas. Assinaturas fora da fase, necessárias antes da venda.
 
 ## Fontes
 - https://registry.npmjs.org/ts-fsrs/5.4.2
