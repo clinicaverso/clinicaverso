@@ -42,7 +42,7 @@ Novos por tema; revisões misturadas, prioridade/vencimento preservados. Atualiz
 
 Membro único por fila/card, deduplicação entre seções; tentativas distintas permitem passos reais repetidos. Fila persistente/incremental sem teto de meta; retomada reutiliza tentativa ativa, abandono não bloqueia permanentemente.
 
-## 4. Interface preservada
+## 4. Interface
 Dashboard/Cards: revisões hoje, atrasados, novos, inicialização e meta/progresso real; “Estudar hoje”/“Retomar”. Temas continuam para primeiras exposições; produto Teoria não muda.
 Sessão mantém pergunta/resposta/comentário/mídia/referências/quatro notas; próxima revisão após commit. Conclusão distingue meta, fila disponível concluída e etapas futuras, nunca “Em dia” com atrasados. Preservar cinzas/verde, foco/teclado, tabelas/imagens/celular; sem redesign.
 
@@ -91,7 +91,7 @@ RPCs: resumo, fila, ler/revelar, preparar e commit restrito. Queries seção/mod
 - Virada do dia preserva tentativa/progresso; avaliação conta no dia do instante preparado. Nova fila usa estado atual sem duplicar tentativa ativa.
 - Habilitação interna/test users. Em falha, suspender motor e reparar adiante, sem apagar dados ou gravar Fase 4 sobre agendados. Rollback incompleto integral; eventos comitados preservados.
 
-## 8. Homologação objetiva
+## 8. Homologação
 - Vetores oficiais fixos para quatro notas/todos os estados, intervalos/retenção; tolerância numérica explícita, datas exatas em ms e reprodução por snapshots/configuração.
 - 20 retries = 1 evento/1 incremento; notas distintas simultâneas entre seções/modos = 1 vencedor/conflito. Nenhum consumo duplicado do estado.
 - Falha após INSERT: rollback de evento/estado/inicialização/tentativa, só em fixtures registrados.
@@ -106,7 +106,7 @@ RPCs: resumo, fila, ler/revelar, preparar e commit restrito. Queries seção/mod
 
 Fixture PostgreSQL isolada ≠ integração real. Aceite: todos os obrigatórios passam, zero falhas críticas, limpeza por IDs registrados e relatório com versões/evidências/recuperação. Nunca homologar teste não executado.
 
-## Decisões para aprovação e riscos
+## Aprovação e riscos
 Aprovar inicialização/meta/fuso/prioridade/parâmetros. Riscos: runtime/ACLs/precisão/backlog/corridas. Assinaturas fora da fase, necessárias antes da venda.
 
 ## Fontes
