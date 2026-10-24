@@ -19,9 +19,9 @@ Base: migrações, contratos, sessões e fechamento da Fase 4; banco real ainda 
 
 Política conservadora proposta:
 1. Nunca estudado: inicializar FSRS na primeira avaliação real da Fase 5.
-2. Estudado sem agenda: grupo **“Iniciar revisão”**, sem vencimento artificial. Na primeira avaliação atual, iniciar estado técnico FSRS como New, registrando origem `phase4_unscheduled` e referência ao último evento real. Não contar como novo para o aluno.
-3. Preservar contadores históricos; separar `reps/lapses` do motor dos totais acumulados. Again da Fase 4 já contou como lapso; FSRS segue a definição da biblioteca, sem corrigir o passado.
-4. `scheduling_status=NULL`, payload desconhecido ou datas incoerentes: inventariar/classificar; não resetar nem incluir como novos silenciosamente. Agendamento reconhecido só continua após validação.
+2. Sem agenda: **“Iniciar revisão”**, sem vencimento fictício. Primeira avaliação atual inicia FSRS técnico New, com origem `phase4_unscheduled`/último evento; não conta como novo.
+3. Preservar totais históricos, separar `reps/lapses` FSRS; lapsos Fase 4 e motor seguem suas definições, sem corrigir passado.
+4. NULL/payload desconhecido/datas incoerentes: classificar, sem reset silencioso. Agenda reconhecida só continua após validação.
 
 Inicialização registra origem/configuração atuais e comita junto da avaliação real, sem evento histórico fictício.
 
@@ -43,11 +43,8 @@ Novos por tema escolhido; revisões misturadas com desempate estável, preservan
 Membro único por fila/card, deduplicação entre seções; tentativas distintas permitem passos reais repetidos. Fila persistente/incremental sem teto de meta; retomada reutiliza tentativa ativa, abandono não bloqueia permanentemente.
 
 ## 4. Interface preservada
-- Dashboard/Cards: “Para revisar hoje”, “Atrasados”, “Novos disponíveis”, “Iniciar revisão”, meta e progresso real, inclusive acima de 25.
-- “Estudar hoje”/“Retomar estudo”; temas continuam disponíveis para primeiras exposições. Não renomear o produto Teoria.
-- Sessão mantém pergunta, resposta, comentário, mídia, referências e quatro avaliações; próxima revisão aparece após commit. Prévias, se usadas, são estimativas.
-- Conclusão distingue meta atingida, fila disponível concluída e próxima etapa aguardando. Nunca “Em dia” com pendências disponíveis; falta de novos não gera avaliações artificiais.
-- Preservar cinzas/verde, componentes atuais, foco/teclado, celular e leitura de tabelas/imagens; falhas recuperáveis, sem redesign.
+Dashboard/Cards: revisões hoje, atrasados, novos, inicialização e meta/progresso real; “Estudar hoje”/“Retomar”. Temas continuam para primeiras exposições; produto Teoria não muda.
+Sessão mantém pergunta/resposta/comentário/mídia/referências/quatro notas; próxima revisão após commit. Conclusão distingue meta, fila disponível concluída e etapas futuras, nunca “Em dia” com atrasados. Preservar cinzas/verde, foco/teclado, tabelas/imagens/celular; sem redesign.
 
 ## 5. Detalhes técnicos — modelo de dados
 Proposta aditiva, sem SQL aplicado:
@@ -62,7 +59,7 @@ Proposta aditiva, sem SQL aplicado:
 | `user_flashcard_states` | Adicionar revisão monotônica, configuração, inicialização e instante FSRS; reutilizar estado/data/estabilidade/dificuldade |
 | `review_events` | Adicionar operação, tentativa, configuração, origem, revisões antes/depois e snapshots; nullable no legado, obrigatórios na nova função |
 
-JSON FSRS completo/versionado preserva passos, reps/lapses e precisão; colunas são projeções, sem truncar próximo cálculo. `last_review` do motor não substitui datas históricas.
+JSON completo/versionado preserva passos/reps/lapses/precisão; colunas são projeções. `last_review` FSRS não substitui datas históricas.
 
 Índices: usuário/vencimento, fila/dia, tentativas pendentes; UNIQUE parcial usuário/operação e usuário/card/revisão anterior nos eventos FSRS. FKs para tentativa/configuração/versão, sem novas referências à autenticação gerenciada.
 
