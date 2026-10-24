@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Fase 5 — Somente planejamento
-- [ ] Apresentar plano técnico de FSRS, fila diária, compatibilidade, segurança e homologação; aguardar aprovação antes de implementar
+- [x] Preparar plano técnico de FSRS, fila diária, compatibilidade, segurança e homologação
+- [ ] Aguardar aprovação explícita do plano antes de implementar — bloqueado pela aprovação do usuário
 
 ## Fase 4 — Estudo do aluno
 - [x] Testar privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
