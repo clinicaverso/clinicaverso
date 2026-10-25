@@ -2,7 +2,8 @@
 
 ## Fase 5 — Somente planejamento
 - [x] Preparar plano técnico de FSRS, fila diária, compatibilidade, segurança e homologação
-- [ ] Aguardar aprovação explícita do plano antes de implementar — bloqueado pela aprovação do usuário
+- [x] Incorporar os 10 ajustes da aprovação da arquitetura e consolidar o plano final
+- [ ] Aguardar aprovação explícita do plano final antes de implementar — bloqueado pela aprovação do usuário
 
 ## Fase 4 — Estudo do aluno
 - [x] Testar privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
