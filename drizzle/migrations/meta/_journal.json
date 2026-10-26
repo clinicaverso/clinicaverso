@@ -50,6 +50,13 @@
       "when": 1792713490541,
       "tag": "0006_phase4_least_privilege_future_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792988056218,
+      "tag": "0007_phase5_fsrs_daily_queue",
+      "breakpoints": true
     }
   ]
 }

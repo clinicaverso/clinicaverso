@@ -200,20 +200,22 @@ BEGIN
                   WHEN st.learning_state='review' THEN 2
                   WHEN st.learning_state='relearning' THEN 3
                   ELSE 4 END AS priority,
-             st.next_review_at AS sort_key
+             st.next_review_at::text AS sort_key
         FROM public.user_flashcard_states st
        WHERE st.user_id=auth.uid() AND st.scheduling_status='scheduled'
          AND ((st.learning_state='review' AND st.next_review_at < v_day_end)
               OR (st.learning_state IN ('learning','relearning') AND st.next_review_at <= now()))
          AND private.study_eligible(st.flashcard_id, p_section)
       UNION ALL
-      SELECT st.flashcard_id, 'phase4_unscheduled', 5, st.last_reviewed_at
+      SELECT st.flashcard_id, 'phase4_unscheduled', 5, st.last_reviewed_at::text
         FROM public.user_flashcard_states st
        WHERE st.user_id=auth.uid() AND st.scheduling_status='unscheduled' AND st.review_count>0
          AND private.study_eligible(st.flashcard_id, p_section)
       UNION ALL
-      SELECT f.id, 'new_card', 6, f.code::text::timestamptz IS NULL -- placeholder substituído abaixo
-        FROM public.flashcards f WHERE false
+      SELECT f.id, 'new_card', 6, f.code
+        FROM public.flashcards f
+       WHERE private.study_eligible(f.id, p_section)
+         AND NOT EXISTS(SELECT 1 FROM public.user_flashcard_states st WHERE st.user_id=auth.uid() AND st.flashcard_id=f.id)
     ) x
    WHERE NOT EXISTS(SELECT 1 FROM public.daily_queue_members m WHERE m.queue_id=v_queue AND m.flashcard_id=x.flashcard_id);
   RETURN v_queue;
