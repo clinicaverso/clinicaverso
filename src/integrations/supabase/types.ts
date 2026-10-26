@@ -44,6 +44,156 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_queue_members: {
+        Row: {
+          created_at: string
+          flashcard_id: string
+          id: string
+          origin: string
+          position: number
+          priority: number
+          queue_id: string
+        }
+        Insert: {
+          created_at?: string
+          flashcard_id: string
+          id?: string
+          origin: string
+          position: number
+          priority: number
+          queue_id: string
+        }
+        Update: {
+          created_at?: string
+          flashcard_id?: string
+          id?: string
+          origin?: string
+          position?: number
+          priority?: number
+          queue_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_queue_members_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_queue_members_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "daily_study_queues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_study_attempts: {
+        Row: {
+          card_version_seen: number | null
+          committed_event_id: string | null
+          created_at: string
+          flashcard_id: string
+          id: string
+          operation_id: string
+          prepared_at: string | null
+          queue_id: string
+          revealed: boolean
+          state_revision_expected: number | null
+        }
+        Insert: {
+          card_version_seen?: number | null
+          committed_event_id?: string | null
+          created_at?: string
+          flashcard_id: string
+          id?: string
+          operation_id?: string
+          prepared_at?: string | null
+          queue_id: string
+          revealed?: boolean
+          state_revision_expected?: number | null
+        }
+        Update: {
+          card_version_seen?: number | null
+          committed_event_id?: string | null
+          created_at?: string
+          flashcard_id?: string
+          id?: string
+          operation_id?: string
+          prepared_at?: string | null
+          queue_id?: string
+          revealed?: boolean
+          state_revision_expected?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_study_attempts_flashcard_id_card_version_seen_fkey"
+            columns: ["flashcard_id", "card_version_seen"]
+            isOneToOne: false
+            referencedRelation: "flashcard_versions"
+            referencedColumns: ["flashcard_id", "version"]
+          },
+          {
+            foreignKeyName: "daily_study_attempts_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "daily_study_attempts_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "daily_study_queues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      daily_study_queues: {
+        Row: {
+          created_at: string
+          day: string
+          id: string
+          policy_version: string
+          section_id: string
+          status: string
+          timezone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          id?: string
+          policy_version?: string
+          section_id: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          id?: string
+          policy_version?: string
+          section_id?: string
+          status?: string
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_study_queues_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       editorial_audit_log: {
         Row: {
           action: string
@@ -484,6 +634,109 @@ export type Database = {
           },
         ]
       }
+      fsrs_configurations: {
+        Row: {
+          adapter_version: string
+          algorithm_version: string
+          created_at: string
+          enable_fuzz: boolean
+          enable_short_term: boolean
+          id: string
+          key: string
+          learning_steps: Json
+          maximum_interval: number
+          package_name: string
+          package_version: string
+          relearning_steps: Json
+          request_retention: number
+          weights: Json
+        }
+        Insert: {
+          adapter_version: string
+          algorithm_version: string
+          created_at?: string
+          enable_fuzz: boolean
+          enable_short_term: boolean
+          id?: string
+          key: string
+          learning_steps: Json
+          maximum_interval: number
+          package_name: string
+          package_version: string
+          relearning_steps: Json
+          request_retention: number
+          weights: Json
+        }
+        Update: {
+          adapter_version?: string
+          algorithm_version?: string
+          created_at?: string
+          enable_fuzz?: boolean
+          enable_short_term?: boolean
+          id?: string
+          key?: string
+          learning_steps?: Json
+          maximum_interval?: number
+          package_name?: string
+          package_version?: string
+          relearning_steps?: Json
+          request_retention?: number
+          weights?: Json
+        }
+        Relationships: []
+      }
+      fsrs_initializations: {
+        Row: {
+          config_id: string
+          created_at: string
+          flashcard_id: string
+          id: string
+          origin: string
+          reference_event_id: string | null
+          user_id: string
+        }
+        Insert: {
+          config_id: string
+          created_at?: string
+          flashcard_id: string
+          id?: string
+          origin: string
+          reference_event_id?: string | null
+          user_id: string
+        }
+        Update: {
+          config_id?: string
+          created_at?: string
+          flashcard_id?: string
+          id?: string
+          origin?: string
+          reference_event_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fsrs_initializations_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "fsrs_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fsrs_initializations_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fsrs_initializations_reference_event_id_fkey"
+            columns: ["reference_event_id"]
+            isOneToOne: false
+            referencedRelation: "learning_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       learning_events: {
         Row: {
           card_version_seen: number
@@ -574,7 +827,9 @@ export type Database = {
       }
       review_events: {
         Row: {
+          attempt_id: string | null
           card_version_seen: number
+          config_id: string | null
           created_at: string
           flashcard_id: string
           fsrs_data: Json
@@ -584,14 +839,20 @@ export type Database = {
             | Database["public"]["Enums"]["learning_state"]
             | null
           new_interval: number
+          operation_id: string | null
+          origin: string | null
           previous_interval: number
           rating: Database["public"]["Enums"]["review_rating"]
           reviewed_at: string
           scheduled_next_review: string
+          state_revision_after: number | null
+          state_revision_before: number | null
           user_id: string
         }
         Insert: {
+          attempt_id?: string | null
           card_version_seen: number
+          config_id?: string | null
           created_at?: string
           flashcard_id: string
           fsrs_data?: Json
@@ -601,14 +862,20 @@ export type Database = {
             | Database["public"]["Enums"]["learning_state"]
             | null
           new_interval: number
+          operation_id?: string | null
+          origin?: string | null
           previous_interval?: number
           rating: Database["public"]["Enums"]["review_rating"]
           reviewed_at?: string
           scheduled_next_review: string
+          state_revision_after?: number | null
+          state_revision_before?: number | null
           user_id: string
         }
         Update: {
+          attempt_id?: string | null
           card_version_seen?: number
+          config_id?: string | null
           created_at?: string
           flashcard_id?: string
           fsrs_data?: Json
@@ -618,13 +885,31 @@ export type Database = {
             | Database["public"]["Enums"]["learning_state"]
             | null
           new_interval?: number
+          operation_id?: string | null
+          origin?: string | null
           previous_interval?: number
           rating?: Database["public"]["Enums"]["review_rating"]
           reviewed_at?: string
           scheduled_next_review?: string
+          state_revision_after?: number | null
+          state_revision_before?: number | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "review_events_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "daily_study_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_events_config_id_fkey"
+            columns: ["config_id"]
+            isOneToOne: false
+            referencedRelation: "fsrs_configurations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "review_events_flashcard_id_fkey"
             columns: ["flashcard_id"]
@@ -890,8 +1175,11 @@ export type Database = {
           current_interval: number
           first_seen_at: string | null
           flashcard_id: string
+          fsrs_config_id: string | null
           fsrs_data: Json
           fsrs_difficulty: number | null
+          fsrs_initialization_id: string | null
+          fsrs_last_computed_at: string | null
           fsrs_stability: number | null
           lapse_count: number
           last_reviewed_at: string | null
@@ -899,6 +1187,7 @@ export type Database = {
           next_review_at: string | null
           review_count: number
           scheduling_status: string | null
+          state_revision: number
           updated_at: string
           user_id: string
         }
@@ -907,8 +1196,11 @@ export type Database = {
           current_interval?: number
           first_seen_at?: string | null
           flashcard_id: string
+          fsrs_config_id?: string | null
           fsrs_data?: Json
           fsrs_difficulty?: number | null
+          fsrs_initialization_id?: string | null
+          fsrs_last_computed_at?: string | null
           fsrs_stability?: number | null
           lapse_count?: number
           last_reviewed_at?: string | null
@@ -916,6 +1208,7 @@ export type Database = {
           next_review_at?: string | null
           review_count?: number
           scheduling_status?: string | null
+          state_revision?: number
           updated_at?: string
           user_id: string
         }
@@ -924,8 +1217,11 @@ export type Database = {
           current_interval?: number
           first_seen_at?: string | null
           flashcard_id?: string
+          fsrs_config_id?: string | null
           fsrs_data?: Json
           fsrs_difficulty?: number | null
+          fsrs_initialization_id?: string | null
+          fsrs_last_computed_at?: string | null
           fsrs_stability?: number | null
           lapse_count?: number
           last_reviewed_at?: string | null
@@ -933,6 +1229,7 @@ export type Database = {
           next_review_at?: string | null
           review_count?: number
           scheduling_status?: string | null
+          state_revision?: number
           updated_at?: string
           user_id?: string
         }
@@ -942,6 +1239,20 @@ export type Database = {
             columns: ["flashcard_id"]
             isOneToOne: false
             referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_flashcard_states_fsrs_config_id_fkey"
+            columns: ["fsrs_config_id"]
+            isOneToOne: false
+            referencedRelation: "fsrs_configurations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_flashcard_states_fsrs_initialization_id_fkey"
+            columns: ["fsrs_initialization_id"]
+            isOneToOne: false
+            referencedRelation: "fsrs_initializations"
             referencedColumns: ["id"]
           },
         ]
@@ -1079,6 +1390,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      commit_daily_rating: {
+        Args: {
+          p_attempt: string
+          p_operation: string
+          p_rating: Database["public"]["Enums"]["review_rating"]
+          p_result: Json
+        }
+        Returns: string
+      }
       confirm_editorial_import: {
         Args: {
           p_filename: string
@@ -1088,6 +1408,7 @@ export type Database = {
         }
         Returns: string
       }
+      daily_summary: { Args: { p_section: string }; Returns: Json }
       duplicate_editorial_card: {
         Args: {
           p_expected: string
@@ -1102,6 +1423,7 @@ export type Database = {
         Args: { kind: string; label: string; parent?: string }
         Returns: string
       }
+      prepare_daily_rating: { Args: { p_attempt: string }; Returns: Json }
       process_editorial_import: {
         Args: { p_import_id: string; p_limit?: number }
         Returns: Json
@@ -1114,10 +1436,15 @@ export type Database = {
         }
         Returns: string
       }
+      read_daily_attempt: {
+        Args: { p_queue: string; p_reveal?: boolean }
+        Returns: Json
+      }
       read_study_session: {
         Args: { p_reveal?: boolean; p_session: string }
         Returns: Json
       }
+      start_daily_queue: { Args: { p_section: string }; Returns: string }
       start_study_session: {
         Args: { p_section: string; p_topic: string }
         Returns: string
