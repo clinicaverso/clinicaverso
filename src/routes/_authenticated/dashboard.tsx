@@ -4,10 +4,10 @@ import { AppShell } from "@/components/clinicaverso/app-shell";
 import { Metric, PageHeader, SectionTitle } from "@/components/clinicaverso/page-parts";
 import { Button } from "@/components/ui/button";
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { overviewOptions } from '@/lib/study/queries';
-import { progress } from '@/lib/study/model';
+import { overviewOptions, dailySummaryOptions } from '@/lib/study/queries';
+import { progress, dailySummarySchema } from '@/lib/study/model';
 
-export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => ({ meta: [{ title: "Início — ClinicaVerso" }, { name: "description", content: "Sua visão geral de estudos no ClinicaVerso." }, { property: "og:title", content: "Início — ClinicaVerso" }, { property: "og:description", content: "Sua visão geral de estudos no ClinicaVerso." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), loader: ({context})=>context.queryClient.ensureQueryData(overviewOptions()), component: Dashboard });
+export const Route = createFileRoute("/_authenticated/dashboard")({ head: () => ({ meta: [{ title: "Início — ClinicaVerso" }, { name: "description", content: "Sua visão geral de estudos no ClinicaVerso." }, { property: "og:title", content: "Início — ClinicaVerso" }, { property: "og:description", content: "Sua visão geral de estudos no ClinicaVerso." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), loader: async ({context})=>{const overview=await context.queryClient.ensureQueryData(overviewOptions());await context.queryClient.ensureQueryData(dailySummaryOptions(overview.section.id));}, component: Dashboard });
 
 const products = [
   { name: "ClinicaVerso Cards", description: "Flashcards para revisão de Clínica Médica.", icon: Layers3, active: true },
