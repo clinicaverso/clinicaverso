@@ -18,6 +18,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminAdminRouteImport } from './routes/_authenticated/_admin/admin'
+import { Route as AuthenticatedDailyQueueRouteImport } from './routes/_authenticated/daily.$queue'
 import { Route as AuthenticatedStudySessionRouteImport } from './routes/_authenticated/study.$session'
 import { Route as AuthenticatedAdminAdminIndexRouteImport } from './routes/_authenticated/_admin/admin.index'
 import { Route as AuthenticatedAdminAdminAreasRouteImport } from './routes/_authenticated/_admin/admin.areas'
@@ -79,6 +80,11 @@ const AuthenticatedAdminAdminRoute = AuthenticatedAdminAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedDailyQueueRoute = AuthenticatedDailyQueueRouteImport.update({
+  id: '/daily/$queue',
+  path: '/daily/$queue',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedStudySessionRoute =
   AuthenticatedStudySessionRouteImport.update({
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/daily/$queue': typeof AuthenticatedDailyQueueRoute
   '/study/$session': typeof AuthenticatedStudySessionRoute
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/performance': typeof AuthenticatedPerformanceRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/daily/$queue': typeof AuthenticatedDailyQueueRoute
   '/study/$session': typeof AuthenticatedStudySessionRoute
   '/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/admin/import': typeof AuthenticatedAdminAdminImportRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/_authenticated/performance': typeof AuthenticatedPerformanceRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/_admin/admin': typeof AuthenticatedAdminAdminRouteWithChildren
+  '/_authenticated/daily/$queue': typeof AuthenticatedDailyQueueRoute
   '/_authenticated/study/$session': typeof AuthenticatedStudySessionRoute
   '/_authenticated/_admin/admin/areas': typeof AuthenticatedAdminAdminAreasRoute
   '/_authenticated/_admin/admin/flashcards': typeof AuthenticatedAdminAdminFlashcardsRouteWithChildren
@@ -272,6 +281,7 @@ export interface FileRouteTypes {
     | '/performance'
     | '/profile'
     | '/admin'
+    | '/daily/$queue'
     | '/study/$session'
     | '/admin/areas'
     | '/admin/flashcards'
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/performance'
     | '/profile'
+    | '/daily/$queue'
     | '/study/$session'
     | '/admin/areas'
     | '/admin/import'
@@ -324,6 +335,7 @@ export interface FileRouteTypes {
     | '/_authenticated/performance'
     | '/_authenticated/profile'
     | '/_authenticated/_admin/admin'
+    | '/_authenticated/daily/$queue'
     | '/_authenticated/study/$session'
     | '/_authenticated/_admin/admin/areas'
     | '/_authenticated/_admin/admin/flashcards'
@@ -413,6 +425,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminAdminRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/daily/$queue': {
+      id: '/_authenticated/daily/$queue'
+      path: '/daily/$queue'
+      fullPath: '/daily/$queue'
+      preLoaderRoute: typeof AuthenticatedDailyQueueRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/study/$session': {
       id: '/_authenticated/study/$session'
@@ -618,6 +637,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedDailyQueueRoute: typeof AuthenticatedDailyQueueRoute
   AuthenticatedStudySessionRoute: typeof AuthenticatedStudySessionRoute
 }
 
@@ -627,6 +647,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedPerformanceRoute: AuthenticatedPerformanceRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedDailyQueueRoute: AuthenticatedDailyQueueRoute,
   AuthenticatedStudySessionRoute: AuthenticatedStudySessionRoute,
 }
 
