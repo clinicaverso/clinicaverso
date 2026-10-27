@@ -17,8 +17,11 @@ const products = [
 
 function Dashboard() {
   const {data}=useSuspenseQuery(overviewOptions());
+  const {data:rawDaily}=useSuspenseQuery(dailySummaryOptions(data.section.id));
+  const daily=dailySummarySchema.parse(rawDaily);
   const total=data.topics.reduce((n,t)=>n+t.total,0), studied=data.topics.reduce((n,t)=>n+t.studied,0), percent=progress(studied,total);
   const next=data.topics.find(t=>t.id===data.resume?.topicId)??data.topics.find(t=>t.studied<t.total);
+  const dueTotal=daily.review_overdue+daily.review_today+daily.learning_due+daily.pending_init;
   return (
     <AppShell>
       <div className="space-y-8 md:space-y-10">
@@ -60,8 +63,8 @@ function Dashboard() {
           <SectionTitle>Resumo de estudos</SectionTitle>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
             <Metric label="Cards estudados" value={String(studied)} />
-            <Metric label="Estudados hoje" value={String(data.today)} detail={`Meta: ${data.goal}`} />
-            <Metric label="Novos disponíveis" value={String(total-studied)} />
+            <Metric label="Meta diária" value={`${daily.distinct_today} / ${daily.goal}`} detail={daily.distinct_today>=daily.goal?'Meta atingida':'cards distintos'} />
+            <Metric label="Revisões pendentes" value={String(dueTotal)} detail={daily.review_overdue>0?`${daily.review_overdue} atrasadas`:undefined} />
             <Metric label="Progresso R1CM" value={`${percent}%`} accent progress={percent} />
           </div>
         </section>
