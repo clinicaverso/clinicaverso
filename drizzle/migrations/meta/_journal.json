@@ -57,6 +57,13 @@
       "when": 1792988056218,
       "tag": "0007_phase5_fsrs_daily_queue",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793208749593,
+      "tag": "0008_phase5_least_privilege_daily_tables",
+      "breakpoints": true
     }
   ]
 }

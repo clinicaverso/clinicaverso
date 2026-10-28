@@ -45,16 +45,16 @@ export function reconstructCard(state: StoredState, now: Date): Card {
   }
   const raw = state.fsrs_data as Record<string, unknown>;
   return {
-    due: new Date(raw.due as string),
-    stability: Number(raw.stability),
-    difficulty: Number(raw.difficulty),
-    elapsed_days: Number(raw.elapsed_days),
-    scheduled_days: Number(raw.scheduled_days),
-    reps: Number(raw.reps),
-    lapses: Number(raw.lapses),
-    learning_steps: Number(raw.learning_steps ?? 0),
-    state: Number(raw.state) as State,
-    ...(raw.last_review ? { last_review: new Date(raw.last_review as string) } : {}),
+    due: new Date(raw['due'] as string),
+    stability: Number(raw['stability']),
+    difficulty: Number(raw['difficulty']),
+    elapsed_days: Number(raw['elapsed_days']),
+    scheduled_days: Number(raw['scheduled_days']),
+    reps: Number(raw['reps']),
+    lapses: Number(raw['lapses']),
+    learning_steps: Number(raw['learning_steps'] ?? 0),
+    state: Number(raw['state']) as State,
+    ...(raw['last_review'] ? { last_review: new Date(raw['last_review'] as string) } : {}),
   };
 }
 
