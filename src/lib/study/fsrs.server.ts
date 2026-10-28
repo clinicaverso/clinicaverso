@@ -1,5 +1,5 @@
 // Adaptador FSRS — somente servidor. Nunca importar em código de cliente.
-import { fsrs, createEmptyCard, generatorParameters, Rating, State, type Card, type FSRSParameters } from 'ts-fsrs';
+import { fsrs, createEmptyCard, generatorParameters, Rating, State, type Card, type Grade, type FSRSParameters } from 'ts-fsrs';
 
 export type FsrsConfigRow = {
   id: string;
@@ -62,7 +62,7 @@ export function ratingValue(rating: 'again' | 'hard' | 'good' | 'easy'): Rating 
   return { again: Rating.Again, hard: Rating.Hard, good: Rating.Good, easy: Rating.Easy }[rating];
 }
 
-export function computeNext(cfg: FsrsConfigRow, state: StoredState, rating: Rating, now: Date) {
+export function computeNext(cfg: FsrsConfigRow, state: StoredState, rating: Grade, now: Date) {
   const engine = buildFsrs(cfg);
   const card = reconstructCard(state, now);
   const result = engine.next(card, now, rating);
