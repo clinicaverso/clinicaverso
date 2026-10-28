@@ -1,12 +1,13 @@
 // Adaptador FSRS — somente servidor. Nunca importar em código de cliente.
 import { fsrs, createEmptyCard, generatorParameters, Rating, State, type Card, type Grade, type FSRSParameters } from 'ts-fsrs';
 
+type Step = `${number}m` | `${number}h` | `${number}d`;
 export type FsrsConfigRow = {
   id: string;
   request_retention: number;
   maximum_interval: number;
-  learning_steps: string[];
-  relearning_steps: string[];
+  learning_steps: Step[];
+  relearning_steps: Step[];
   enable_fuzz: boolean;
   enable_short_term: boolean;
   weights: number[];
