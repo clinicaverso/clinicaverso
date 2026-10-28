@@ -1,9 +1,13 @@
 # Roadmap
 
-## Fase 5 — Somente planejamento
+## Fase 5 — FSRS e fila diária
 - [x] Preparar plano técnico de FSRS, fila diária, compatibilidade, segurança e homologação
 - [x] Incorporar os 10 ajustes da aprovação da arquitetura e consolidar o plano final
-- [ ] Aguardar aprovação explícita do plano final antes de implementar — bloqueado pela aprovação do usuário
+- [x] Aplicar migrações aditivas: configuração FSRS versionada, fila diária, tentativas, inicializações, hardening de review_events e privilégios mínimos
+- [x] Implementar motor FSRS no servidor (ts-fsrs@5.4.2 fixado), preparação/commit transacional idempotente e modos diário + por tema com estado global compartilhado
+- [x] Conectar Cards e Dashboard à fila diária e à meta de 25 cards distintos preservando a identidade visual
+- [x] Validar no navegador: fila criada, card apresentado, revelação, avaliação Moderado comitada, estado agendado e históricos da Fase 4 intactos
+- [ ] Homologação completa da Fase 5 (concorrência, virada de dia, reaprendizagem, regressões Fases 1–4) — pendente, próxima etapa
 
 ## Fase 4 — Estudo do aluno
 - [x] Testar privilégios mínimos, concorrência com escolhas distintas, rollback real controlado, mídia revogada/expirada, catálogo futuro, celular e regressões XLSX/Performance; consolidar evidências
