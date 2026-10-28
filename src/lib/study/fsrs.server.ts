@@ -60,7 +60,7 @@ export function reconstructCard(state: StoredState, now: Date): Card {
 }
 
 export function ratingValue(rating: 'again' | 'hard' | 'good' | 'easy'): Grade {
-  return { again: Rating.Again, hard: Rating.Hard, good: Rating.Good, easy: Rating.Easy }[rating];
+  return { again: Rating.Again, hard: Rating.Hard, good: Rating.Good, easy: Rating.Easy }[rating] as Grade;
 }
 
 export function computeNext(cfg: FsrsConfigRow, state: StoredState, rating: Grade, now: Date) {
