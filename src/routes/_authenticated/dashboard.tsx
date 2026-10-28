@@ -64,7 +64,7 @@ function Dashboard() {
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-4">
             <Metric label="Cards estudados" value={String(studied)} />
             <Metric label="Meta diária" value={`${daily.distinct_today} / ${daily.goal}`} detail={daily.distinct_today>=daily.goal?'Meta atingida':'cards distintos'} />
-            <Metric label="Revisões pendentes" value={String(dueTotal)} detail={daily.review_overdue>0?`${daily.review_overdue} atrasadas`:undefined} />
+            <Metric label="Revisões pendentes" value={String(dueTotal)} detail={daily.review_overdue>0?`${daily.review_overdue} atrasadas`:'nenhuma atrasada'} />
             <Metric label="Progresso R1CM" value={`${percent}%`} accent progress={percent} />
           </div>
         </section>

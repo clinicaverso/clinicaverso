@@ -1,12 +1,13 @@
 // Adaptador FSRS — somente servidor. Nunca importar em código de cliente.
-import { fsrs, createEmptyCard, generatorParameters, Rating, State, type Card, type FSRSParameters } from 'ts-fsrs';
+import { fsrs, createEmptyCard, generatorParameters, Rating, State, type Card, type Grade, type FSRSParameters } from 'ts-fsrs';
 
+type Step = `${number}m` | `${number}h` | `${number}d`;
 export type FsrsConfigRow = {
   id: string;
   request_retention: number;
   maximum_interval: number;
-  learning_steps: string[];
-  relearning_steps: string[];
+  learning_steps: Step[];
+  relearning_steps: Step[];
   enable_fuzz: boolean;
   enable_short_term: boolean;
   weights: number[];
@@ -45,24 +46,24 @@ export function reconstructCard(state: StoredState, now: Date): Card {
   }
   const raw = state.fsrs_data as Record<string, unknown>;
   return {
-    due: new Date(raw.due as string),
-    stability: Number(raw.stability),
-    difficulty: Number(raw.difficulty),
-    elapsed_days: Number(raw.elapsed_days),
-    scheduled_days: Number(raw.scheduled_days),
-    reps: Number(raw.reps),
-    lapses: Number(raw.lapses),
-    learning_steps: Number(raw.learning_steps ?? 0),
-    state: Number(raw.state) as State,
-    ...(raw.last_review ? { last_review: new Date(raw.last_review as string) } : {}),
+    due: new Date(raw['due'] as string),
+    stability: Number(raw['stability']),
+    difficulty: Number(raw['difficulty']),
+    elapsed_days: Number(raw['elapsed_days']),
+    scheduled_days: Number(raw['scheduled_days']),
+    reps: Number(raw['reps']),
+    lapses: Number(raw['lapses']),
+    learning_steps: Number(raw['learning_steps'] ?? 0),
+    state: Number(raw['state']) as State,
+    ...(raw['last_review'] ? { last_review: new Date(raw['last_review'] as string) } : {}),
   };
 }
 
-export function ratingValue(rating: 'again' | 'hard' | 'good' | 'easy'): Rating {
-  return { again: Rating.Again, hard: Rating.Hard, good: Rating.Good, easy: Rating.Easy }[rating];
+export function ratingValue(rating: 'again' | 'hard' | 'good' | 'easy'): Grade {
+  return { again: Rating.Again, hard: Rating.Hard, good: Rating.Good, easy: Rating.Easy }[rating] as Grade;
 }
 
-export function computeNext(cfg: FsrsConfigRow, state: StoredState, rating: Rating, now: Date) {
+export function computeNext(cfg: FsrsConfigRow, state: StoredState, rating: Grade, now: Date) {
   const engine = buildFsrs(cfg);
   const card = reconstructCard(state, now);
   const result = engine.next(card, now, rating);
